@@ -29,7 +29,7 @@ public class GlobalOciCoordinator {
 		LOGGER.info("Global OCI Coordinator started");
 				
 		System.out.println("Type exit+Enter to stop the program");
-				
+		
 		String inLine = "";
 		InputStreamReader	inputStreamReader	= new InputStreamReader(System.in);
 		BufferedReader		bufferedReader 		= new BufferedReader(inputStreamReader);
@@ -50,6 +50,10 @@ public class GlobalOciCoordinator {
 			}
 
 		} // while
+		
+		// example object instantiation 
+		TenantRestInterface restInterface = new TenantRestInterface();
+		restInterface.connect();
 				
 		LOGGER.info("Global OCI Coordinator stopped");
 
