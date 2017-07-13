@@ -54,6 +54,9 @@ public class GlobalOciCoordinator {
 		// example object instantiation 
 		TenantRestInterface restInterface = new TenantRestInterface();
 		restInterface.connect();
+		
+		CarrierRestInterface carrier = new CarrierRestInterface();
+		carrier.install();
 				
 		LOGGER.info("Global OCI Coordinator stopped");
 
