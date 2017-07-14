@@ -57,6 +57,7 @@ public class GlobalOciCoordinator {
 		
 		CarrierRestInterface carrier = new CarrierRestInterface();
 		carrier.install();
+		carrier.uninstall();
 				
 		LOGGER.info("Global OCI Coordinator stopped");
 
