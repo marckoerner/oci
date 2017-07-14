@@ -11,7 +11,7 @@ package oci.gocic;
 public class CarrierRestInterface {
 	
 	public void install() {
-		// install new app
+		// install tenant new app
 	}
 
 }
