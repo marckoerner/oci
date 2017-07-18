@@ -10,7 +10,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.logging.Logger;
 
-import oci.lib.CesClientSocket;
 import oci.lib.ServiceNameResolver;
 
 
@@ -38,7 +37,7 @@ public class EchoClient {
 		
 		// try to establish connection between client and server
 		try {
-			// connect to edge service
+			// connect to edge service using the OCI ServiceNameResolver (OCI CESlib)
 			clientSocket = new Socket(ServiceNameResolver.getEdgeServiceIpAddress(SERVICE_NAME), SERVICE_PORT);
 			// set timeout to 5 seconds
 			clientSocket.setSoTimeout(5000);
