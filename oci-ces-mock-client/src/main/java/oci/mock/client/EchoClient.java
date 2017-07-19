@@ -55,19 +55,25 @@ public class EchoClient {
 			String fromServer	= null;
 			String fromUser		= null;
 			
+			System.out.println("Type exit+Enter to stop the program");
+			
 			// server communication loop
-			while ((fromServer = in.readLine()) != null) {
+			while ((fromUser = stdIn.readLine()) != null) {
 				
-			    System.out.println("Server: " + fromServer);
-			    if (fromServer.equals("Bye."))
-			        break;
-
-			    fromUser = stdIn.readLine();
-			    if (fromUser != null) {
+				if (fromUser != null) {
 			        System.out.println("Client: " + fromUser);
 			        out.println(fromUser);
 			    }
-			
+				
+				if((fromServer = in.readLine()) != null) {
+					System.out.println("Server: " + fromServer);
+				}
+			    
+			    if (fromServer.equals("exit")) {
+			    	System.out.println("Bye, bye!");
+			    	break;
+			    }
+
 			} // while
 			
 		} catch (Exception error) {
@@ -81,4 +87,4 @@ public class EchoClient {
 		return;	
 	} // main
 
-} // Client class
+} // EchoClient class
