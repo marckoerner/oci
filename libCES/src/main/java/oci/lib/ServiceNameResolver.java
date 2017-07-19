@@ -13,7 +13,7 @@ import java.net.UnknownHostException;
 public class ServiceNameResolver {
 	
 	// localhost
-	private final static byte[]			IPADDRESS		= {(byte) 127, (byte) 0, (byte) 0, (byte) 1};
+	public final static byte[]			IPADDRESS		= {(byte) 127, (byte) 0, (byte) 0, (byte) 1};
 	public	final static int			PORT			= 5533; // OCI name service port (DNS 53)
 
 	
@@ -24,9 +24,9 @@ public class ServiceNameResolver {
 		
 		// get Edge Service IP address via OCI name resolution protocol (UDP)
 		try {
+			// TODO replace following line with OCI name service request 
 			ip = InetAddress.getByAddress(IPADDRESS);
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
