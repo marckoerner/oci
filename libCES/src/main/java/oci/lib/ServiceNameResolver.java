@@ -14,7 +14,7 @@ public class ServiceNameResolver {
 	
 	// localhost
 	public final static byte[]			IPADDRESS		= {(byte) 127, (byte) 0, (byte) 0, (byte) 1};
-	public	final static int			PORT			= 5533; // OCI name service port (DNS 53)
+	public final static int				PORT			= 5533; // OCI name service port (DNS 53)
 
 	
 	
