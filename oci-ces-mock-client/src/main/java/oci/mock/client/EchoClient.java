@@ -31,11 +31,11 @@ public class EchoClient {
 	 */
 	public static void main(String[] args) {
 		
-		Socket clientSocket = null;
-		
-		LOGGER.info("Try to connect to server");
+		LOGGER.info("EchoClient started");
 		
 		// try to establish connection between client and server
+		LOGGER.info("Try to connect to server");
+		Socket clientSocket = null;
 		try {
 			// connect to edge service using the OCI ServiceNameResolver (OCI CESlib)
 			clientSocket = new Socket(ServiceNameResolver.getEdgeServiceIpAddress(SERVICE_NAME), SERVICE_PORT);

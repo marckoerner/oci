@@ -31,15 +31,19 @@ public class EchoEdgeService extends EdgeDiscoveryService {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
+		LOGGER.info("EchoEdgeService started");
 
+		LOGGER.info("Try to open a server socket");
 		try {
-			
 			@SuppressWarnings("resource")
 			ServerSocket serverSocket = new ServerSocket(SERVICE_PORT);
 			// TODO bind address implementation via service template or ServiceNameResolver e.g.:
 			// ServerSocket serverSocket = new ServerSocket(ServiceNameResolver.getEdgeServiceIpAddress(SERVICE_NAME), SERVICE_PORT);
 			
+			LOGGER.info("Waiting for client connection");
 			Socket clientSocket = serverSocket.accept();
+			LOGGER.info("Client connected");
 			
 			// get socket i/o
 			PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -58,6 +62,9 @@ public class EchoEdgeService extends EdgeDiscoveryService {
 			LOGGER.warning(error.getStackTrace().toString());
 			
 		} // try - catch
+		
+		LOGGER.info("Exit program");
+		return;
 		
 	} // main
 
