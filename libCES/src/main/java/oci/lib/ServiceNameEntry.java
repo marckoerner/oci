@@ -7,6 +7,7 @@ import java.net.InetAddress;
 
 /**
  * @author marc
+ * 
  *
  */
 public class ServiceNameEntry {
