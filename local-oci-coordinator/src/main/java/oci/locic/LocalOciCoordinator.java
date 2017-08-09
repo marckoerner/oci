@@ -91,7 +91,7 @@ public class LocalOciCoordinator {
 		} catch(Exception error) {
 			
 			LOGGER.warning(error.getMessage());
-			LOGGER.warning(error.getStackTrace().toString());
+			// LOGGER.warning(error.getStackTrace().toString());
 			
 		} // try - catch
 	

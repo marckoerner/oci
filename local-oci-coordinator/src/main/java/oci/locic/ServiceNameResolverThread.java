@@ -32,7 +32,9 @@ public class ServiceNameResolverThread extends Thread {
 		try {
 			
 			while(true) {
+				
 				LocalOciCoordinator.LOGGER.info("Waiting for ServiceNameResolver registration");
+				// blocking accept is ended when client connects or LOCIC main closes the server socket => exception
 				serviceResolverClient = this.serverSocket.accept();
 				LocalOciCoordinator.LOGGER.info("ServiceNameResolver client connected");
 
@@ -66,7 +68,6 @@ public class ServiceNameResolverThread extends Thread {
 		} catch(Exception error) {
 			
 			LocalOciCoordinator.LOGGER.warning(error.getMessage());
-			LocalOciCoordinator.LOGGER.warning(error.getStackTrace().toString());
 			
 		} // try - catch
 		

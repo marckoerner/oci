@@ -32,6 +32,7 @@ public class ServiceNameRegistrationThread extends Thread {
 			while(true) {
 				
 				LocalOciCoordinator.LOGGER.info("Waiting for DiscoveryService registration");
+				// blocking accept is ended when client connects or LOCIC main closes the server socket => exception
 				serviceRegistrationClient = this.serverSocket.accept();
 				LocalOciCoordinator.LOGGER.info("ServiceNameRegistration client connected");
 				
@@ -54,7 +55,6 @@ public class ServiceNameRegistrationThread extends Thread {
 		} catch(Exception error) {
 			
 			LocalOciCoordinator.LOGGER.warning(error.getMessage());
-			LocalOciCoordinator.LOGGER.warning(error.getStackTrace().toString());
 			
 		} // try - catch
 		
