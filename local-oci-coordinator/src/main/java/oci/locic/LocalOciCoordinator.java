@@ -25,6 +25,9 @@ import oci.lib.ServiceNameResolver;
 public class LocalOciCoordinator {
 	
     static final Logger LOGGER = Logger.getLogger(LocalOciCoordinator.class.getName());
+	// create vector with discovery service name to IP entries
+    static Vector<ServiceNameEntry> serviceList = new Vector<ServiceNameEntry>();
+
 
 	/**
 	 * @param args
@@ -34,7 +37,7 @@ public class LocalOciCoordinator {
 		LOGGER.info("Local OCI Coordinator started");
 		
 		// create vector with discovery service name to IP entries
-	    Vector<ServiceNameEntry> serviceList = new Vector<ServiceNameEntry>();
+	    // Vector<ServiceNameEntry> serviceList = new Vector<ServiceNameEntry>();
 		
 		// add mock echo edge service to service list
 		ServiceNameEntry echoService = null;
@@ -42,49 +45,40 @@ public class LocalOciCoordinator {
 			echoService = new ServiceNameEntry("mockService", InetAddress.getByAddress(ServiceNameResolver.IPADDRESS));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
-			serviceList.add(echoService);
+			LocalOciCoordinator.serviceList.add(echoService);
 		}
 		
-		// start service registration and resolver threads
 		try {
-			// open service name resolver socket server
-			LOGGER.info("Try to open a server socket OCI name resolution port (" + ServiceNameResolver.PORT + ")");
-			ServerSocket serviceResolverSocket = new ServerSocket(ServiceNameResolver.PORT);
-			LOGGER.info("Successful");
-
-			// open service name resolution socket server
+			// start service registration thread
 			LOGGER.info("Try to open a server socket OCI name resolution port (" + ServiceNameRegistration.PORT + ")");
 			ServerSocket serviceRegistrationSocket = new ServerSocket(ServiceNameRegistration.PORT);
 			LOGGER.info("Successful");
 			ServiceNameRegistrationThread serviceRegistration = new ServiceNameRegistrationThread(serviceRegistrationSocket);
 			serviceRegistration.start();
-	        
-			LOGGER.info("Waiting for ServiceNameResolver request");
-			Socket serviceResolver = serviceResolverSocket.accept();
-			LOGGER.info("ServiceNameResolver client connected");
-		
-			// create object streams (later UDP set/get implementation)
-			ObjectInputStream	ois = new ObjectInputStream(serviceResolver.getInputStream());
-			ObjectOutputStream	oos = new ObjectOutputStream(serviceResolver.getOutputStream());
+			
+			// start service resolver thread
+			LOGGER.info("Try to open a server socket OCI name resolution port (" + ServiceNameResolver.PORT + ")");
+			ServerSocket serviceResolverSocket = new ServerSocket(ServiceNameResolver.PORT);
+			LOGGER.info("Successful");
+			ServiceNameResolverThread serviceResolver = new ServiceNameResolverThread(serviceResolverSocket);
 			
 			// create worker threads for NameServiceResolver and NameServiceRegister
 			// write / read information from service vector
 			// while main-loop wait for console command to exit / print stats
 			
 					
-			// create standard (CMD) i/o accessible objects
+			// read from cmd and wait for command EXIT
 			InputStreamReader	inputStreamReader	= new InputStreamReader(System.in);
 			BufferedReader		stdIn		 		= new BufferedReader(inputStreamReader);					
-			
 			String inputLine;
 			while ((inputLine = stdIn.readLine()) != null) {
-				// out.println(inputLine);
 				System.out.println(inputLine);
 				if(inputLine.equals("exit")) {
-					// shut down all threads (registration + resolver)
+					// shut down all sockets and wait until worker threads terminate (registration + resolver)
 					serviceRegistrationSocket.close(); // interrupts accept() method within thread implementation
 					serviceRegistration.join();
-					
+					serviceResolverSocket.close();
+					serviceResolver.join();
 					return;
 				}
 			} // while
