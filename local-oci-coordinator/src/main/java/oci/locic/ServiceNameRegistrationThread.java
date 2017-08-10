@@ -11,8 +11,9 @@ import java.net.Socket;
 import oci.lib.ServiceNameEntry;
 
 /**
+ * The ServiceNameRegistrationThread implements a worker thread which adds the edge service name to IP address mapping information to the GOCIC service entry list
+ * 
  * @author marc
- *
  */
 public class ServiceNameRegistrationThread extends Thread {
 	
@@ -42,6 +43,7 @@ public class ServiceNameRegistrationThread extends Thread {
 				
 				// obtain service entry and add it to LOCIC service entry vector
 				ServiceNameEntry serviceNameEntry = (ServiceNameEntry) ois.readObject();
+				// TODO check if entry is already available before adding it to the vector
 				LocalOciCoordinator.serviceList.add(serviceNameEntry);
 				LocalOciCoordinator.LOGGER.info("ServiceNameEntry received:" + serviceNameEntry.toString());
 				

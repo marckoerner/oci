@@ -6,9 +6,9 @@ package oci.lib;
 import java.net.InetAddress;
 
 /**
- * @author marc
+ * The ServiceNameEntry class maps a service name to an IP address
  * 
- *
+ * @author marc
  */
 public class ServiceNameEntry {
 	

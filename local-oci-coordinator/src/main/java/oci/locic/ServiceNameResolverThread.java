@@ -11,8 +11,9 @@ import java.net.Socket;
 import oci.lib.ServiceNameEntry;
 
 /**
+ * The ServiceNameResolverThread class implements and worker thread for the providing client requests with the edge service ip address
+ * 
  * @author marc
- *
  */
 public class ServiceNameResolverThread extends Thread {
 	
@@ -46,10 +47,10 @@ public class ServiceNameResolverThread extends Thread {
 				for(int i = 0; i < LocalOciCoordinator.serviceList.size(); i++) {
 					if(LocalOciCoordinator.serviceList.get(i).getServiceName().equals(serviceNameEntry.getServiceName())) {
 						
+						// TODO how to handle duplicated entries - currently client receives all matching service entries
 						if(serviceNameEntry.getIpAddress() == null) { // not necessary safety check
 							oos.writeObject(LocalOciCoordinator.serviceList.get(i));
 							oos.flush();
-
 						}
 						
 					} else {

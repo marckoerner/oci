@@ -87,7 +87,6 @@ public class LocalOciCoordinator {
 			// serviceRegistrationSocket.close(); // 
 			// workerThread.join();
 			
-			
 		} catch(Exception error) {
 			
 			LOGGER.warning(error.getMessage());
