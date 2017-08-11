@@ -28,5 +28,12 @@ public class ServiceNameEntry {
 	public String getServiceName() {
 		return this.serviceName;
 	}
+	
+	public boolean equals(ServiceNameEntry entry) {
+		boolean returnValue = false;
+		if(this.serviceName == entry.getServiceName()
+				&& this.ip.equals(entry.getIpAddress())) returnValue = true;
+		return returnValue;
+	}
 
 } // class ServiceNameEntry
