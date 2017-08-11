@@ -29,6 +29,14 @@ public class ServiceNameEntry {
 		return this.serviceName;
 	}
 	
+	@Override
+	public String toString() {
+		String returnValue = "";
+		returnValue += this.serviceName;
+		returnValue += this.ip.toString();
+		return returnValue;
+	}
+	
 	public boolean equals(ServiceNameEntry entry) {
 		boolean returnValue = false;
 		if(this.serviceName == entry.getServiceName()
