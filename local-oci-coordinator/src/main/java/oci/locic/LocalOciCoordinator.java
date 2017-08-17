@@ -65,7 +65,6 @@ public class LocalOciCoordinator {
 			ServiceNameResolverThread serviceResolverWorker = new ServiceNameResolverThread(serviceResolverSocket);
 			serviceResolverWorker.start();
 
-								
 			// read from cmd and wait for command EXIT or statistics
 			InputStreamReader	inputStreamReader	= new InputStreamReader(System.in);
 			BufferedReader		stdIn		 		= new BufferedReader(inputStreamReader);					

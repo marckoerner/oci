@@ -25,8 +25,7 @@ public class EchoEdgeService extends EdgeDiscoveryService {
 	// OCI service name
 	public final static String	SERVICE_NAME	= "mockService";
 	public final static int		SERVICE_PORT	= 9292;
-	
-	
+		
 	/**
 	 * @param args
 	 */
