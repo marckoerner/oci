@@ -8,10 +8,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 /**
- * @author marc
+ * @author Marc Koerner
  *
  */
 public class ServiceNameResolver {
@@ -19,8 +18,9 @@ public class ServiceNameResolver {
 	// localhost
 	public final static byte[]			IPADDRESS		= {(byte) 127, (byte) 0, (byte) 0, (byte) 1}; 	// LOCIC IP (first iteration)
 	public final static int				PORT			= 5533; // OCI name service port (DNS 53)
-
 	
+    private final static int			SOCKET_TIMEOUT	= 5000; // 5 seconds timeout
+
 	
 	public final static InetAddress getEdgeServiceIpAddress(String serviceName) {
 		
@@ -31,10 +31,11 @@ public class ServiceNameResolver {
 			// ip = InetAddress.getByAddress(IPADDRESS); // hard coded dummy (deprecated)
 			
 			Socket locicSocket = new Socket(InetAddress.getByAddress(IPADDRESS), PORT);
+			locicSocket.setSoTimeout(SOCKET_TIMEOUT);
 			
 			// create object streams (later UDP set/get implementation)
-			ObjectInputStream	ois = new ObjectInputStream(locicSocket.getInputStream());
 			ObjectOutputStream	oos = new ObjectOutputStream(locicSocket.getOutputStream());
+			ObjectInputStream	ois = new ObjectInputStream(locicSocket.getInputStream());			
 			
 			// create ServiceNameEntry template and fetch information from name resolution service
 			ServiceNameEntry edgeServiceEntry = new ServiceNameEntry(serviceName, null);

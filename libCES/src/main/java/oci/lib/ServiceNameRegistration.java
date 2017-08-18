@@ -4,7 +4,7 @@
 package oci.lib;
 
 /**
- * @author marc
+ * @author Marc Koerner
  *
  */
 public class ServiceNameRegistration {

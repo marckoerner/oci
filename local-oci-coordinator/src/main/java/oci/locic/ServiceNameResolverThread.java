@@ -13,7 +13,7 @@ import oci.lib.ServiceNameEntry;
 /**
  * The ServiceNameResolverThread class implements and worker thread for the providing client requests with the edge service ip address
  * 
- * @author marc
+ * @author Marc Koerner
  */
 public class ServiceNameResolverThread extends Thread {
 	
@@ -40,9 +40,9 @@ public class ServiceNameResolverThread extends Thread {
 				LocalOciCoordinator.LOGGER.info("ServiceNameResolver client connected");
 
 				// create object streams (later UDP set/get implementation)
-				ObjectInputStream	ois = new ObjectInputStream(serviceResolverClient.getInputStream());
 				ObjectOutputStream	oos = new ObjectOutputStream(serviceResolverClient.getOutputStream());
-				
+				ObjectInputStream	ois = new ObjectInputStream(serviceResolverClient.getInputStream());
+							
 				ServiceNameEntry serviceNameEntry = (ServiceNameEntry) ois.readObject();
 				if(serviceNameEntry == null) break;
 				
@@ -53,6 +53,8 @@ public class ServiceNameResolverThread extends Thread {
 						if(serviceNameEntry.getIpAddress() == null) { // not necessary safety check
 							oos.writeObject(LocalOciCoordinator.serviceList.get(i));
 							oos.flush();
+							LocalOciCoordinator.LOGGER.info("Service name entry sent");
+
 						}
 						
 					} else {
@@ -63,6 +65,7 @@ public class ServiceNameResolverThread extends Thread {
 
 				} // for
 				
+				LocalOciCoordinator.LOGGER.info("Close service name resolver connection");
 				ois.close();
 				oos.close();
 				

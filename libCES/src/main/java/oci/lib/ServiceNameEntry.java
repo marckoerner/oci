@@ -3,14 +3,17 @@
  */
 package oci.lib;
 
+import java.io.Serializable;
 import java.net.InetAddress;
 
 /**
  * The ServiceNameEntry class maps a service name to an IP address
  * 
- * @author marc
+ * @author Marc Koerner
  */
-public class ServiceNameEntry {
+public class ServiceNameEntry implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private String		serviceName	= null;
 	private InetAddress ip			= null;
