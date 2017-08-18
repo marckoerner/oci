@@ -78,7 +78,6 @@ public class EchoClient {
 			
 		} catch (Exception error) {
 			LOGGER.warning(error.toString());
-			LOGGER.warning(error.getStackTrace().toString());
 			error.getStackTrace();
 		} // try - catch
 		
