@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package oci.mock.edge;
 
 
@@ -14,8 +12,9 @@ import java.util.logging.Logger;
 import oci.template.EdgeDiscoveryService;
 
 /**
+ * The EchoEdgeService is a tool which helps to test the OCI implementation. It is a mock edge application.
+ * 
  * @author Marc Koerner
- *
  */
 public class EchoEdgeService extends EdgeDiscoveryService {
 

@@ -15,7 +15,7 @@ import oci.lib.ServiceNameEntry;
 import oci.lib.ServiceNameRegistration;
 import oci.lib.ServiceNameResolver;
 /**
- * The LocalOciCoordinator class implements the Local OCI Coordinator 
+ * The LocalOciCoordinator class implements the Local OCI Coordinator.
  * 
  * @author Marc Koerner
  */
@@ -31,7 +31,7 @@ public class LocalOciCoordinator {
     static Vector<ServiceNameEntry> serviceList = new Vector<ServiceNameEntry>();
 
 	/**
-	 * Local OCI Coordinator started main method
+	 * Local OCI Coordinator main method
 	 * 
 	 * @param args
 	 */

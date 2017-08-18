@@ -15,8 +15,9 @@ import oci.lib.ServiceNameResolver;
 
 
 /**
+ * The EchoClient is a tool which helps to test the OCI implementation. It is a mock client application.
+ * 
  * @author Marc Koerner
- *
  */
 public class EchoClient {
 	

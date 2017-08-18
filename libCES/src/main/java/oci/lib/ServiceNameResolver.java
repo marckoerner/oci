@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package oci.lib;
 
 import java.io.IOException;
@@ -10,8 +8,9 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 /**
+ * This class provides methods for the OCI service name resolution
+ * 
  * @author Marc Koerner
- *
  */
 public class ServiceNameResolver {
 	
@@ -22,6 +21,12 @@ public class ServiceNameResolver {
     private final static int			SOCKET_TIMEOUT	= 5000; // 5 seconds timeout
 
 	
+    /**
+	 * Connects to the OCI name service and returns the IP of the requested edge service. 
+	 * The method returns null if no service entry has been found.
+	 * 
+	 * @param serviceName Name of the edge service 
+	 */
 	public final static InetAddress getEdgeServiceIpAddress(String serviceName) {
 		
 		InetAddress ip = null;
