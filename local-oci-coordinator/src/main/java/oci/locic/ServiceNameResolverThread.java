@@ -44,6 +44,7 @@ public class ServiceNameResolverThread extends Thread {
 				ObjectOutputStream	oos = new ObjectOutputStream(serviceResolverClient.getOutputStream());
 				
 				ServiceNameEntry serviceNameEntry = (ServiceNameEntry) ois.readObject();
+				if(serviceNameEntry == null) break;
 				for(int i = 0; i < LocalOciCoordinator.serviceList.size(); i++) {
 					if(LocalOciCoordinator.serviceList.get(i).getServiceName().equals(serviceNameEntry.getServiceName())) {
 						
