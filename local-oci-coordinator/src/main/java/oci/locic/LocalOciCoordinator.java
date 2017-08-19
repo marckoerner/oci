@@ -15,20 +15,23 @@ import oci.lib.ServiceNameEntry;
 import oci.lib.ServiceNameRegistration;
 import oci.lib.ServiceNameResolver;
 /**
- * The LocalOciCoordinator class implements the Local OCI Coordinator 
+ * The LocalOciCoordinator class implements the Local OCI Coordinator.
  * 
- * @author marc
+ * @author Marc Koerner
  */
 public class LocalOciCoordinator {
 	
-    static final Logger LOGGER = Logger.getLogger(LocalOciCoordinator.class.getName());
+    static final Logger			LOGGER = Logger.getLogger(LocalOciCoordinator.class.getName());
+    static final int			SOCKET_TIMEOUT	= 5000; // 5 seconds timeout
+
+    
     /**
 	 * vector with discovery service name to IP mapping entries
 	 */
     static Vector<ServiceNameEntry> serviceList = new Vector<ServiceNameEntry>();
 
 	/**
-	 * Local OCI Coordinator started main method
+	 * Local OCI Coordinator main method
 	 * 
 	 * @param args
 	 */
@@ -65,7 +68,6 @@ public class LocalOciCoordinator {
 			ServiceNameResolverThread serviceResolverWorker = new ServiceNameResolverThread(serviceResolverSocket);
 			serviceResolverWorker.start();
 
-								
 			// read from cmd and wait for command EXIT or statistics
 			InputStreamReader	inputStreamReader	= new InputStreamReader(System.in);
 			BufferedReader		stdIn		 		= new BufferedReader(inputStreamReader);					

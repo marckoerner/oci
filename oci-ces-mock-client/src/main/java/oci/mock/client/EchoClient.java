@@ -7,6 +7,7 @@ package oci.mock.client;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.logging.Logger;
 
@@ -14,8 +15,9 @@ import oci.lib.ServiceNameResolver;
 
 
 /**
- * @author marc
- *
+ * The EchoClient is a tool which helps to test the OCI implementation. It is a mock client application.
+ * 
+ * @author Marc Koerner
  */
 public class EchoClient {
 	
@@ -26,11 +28,14 @@ public class EchoClient {
 	public final static String	SERVICE_NAME	= "mockService";
 	public final static int		SERVICE_PORT	= 9292;
 	
+    private static final int	SOCKET_TIMEOUT	= 5000; // 5 seconds timeout
+
+	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
+				
 		LOGGER.info("EchoClient started");
 		
 		// try to establish connection between client and server
@@ -38,16 +43,17 @@ public class EchoClient {
 		Socket clientSocket = null;
 		try {
 			// connect to edge service using the OCI ServiceNameResolver (OCI CESlib)
-			clientSocket = new Socket(ServiceNameResolver.getEdgeServiceIpAddress(SERVICE_NAME), SERVICE_PORT);
-			// set timeout to 5 seconds
-			clientSocket.setSoTimeout(5000);
+			LOGGER.fine("Try to find OCI name service and resolve service IP");
+			InetAddress ip = ServiceNameResolver.getEdgeServiceIpAddress(SERVICE_NAME);
+			LOGGER.fine("successful - service IP is " + ip.toString());
+			clientSocket = new Socket(ip, SERVICE_PORT);
+			LOGGER.info("connected");
+			clientSocket.setSoTimeout(SOCKET_TIMEOUT);
 			
 			// create socket i/o accessible objects
 			PrintWriter		out	= new PrintWriter(clientSocket.getOutputStream(), true);
 			BufferedReader	in	= new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-			
-			LOGGER.info("connected");
-			
+						
 			// create standard (CMD) i/o accessible objects
 			InputStreamReader	inputStreamReader	= new InputStreamReader(System.in);
 			BufferedReader		stdIn		 		= new BufferedReader(inputStreamReader);
@@ -78,7 +84,6 @@ public class EchoClient {
 			
 		} catch (Exception error) {
 			LOGGER.warning(error.toString());
-			LOGGER.warning(error.getStackTrace().toString());
 			error.getStackTrace();
 		} // try - catch
 		
