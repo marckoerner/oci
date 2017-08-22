@@ -5,10 +5,12 @@ package oci.mock.edge;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Logger;
 
+import oci.lib.ServiceNameRegistration;
 import oci.template.EdgeDiscoveryService;
 
 /**
@@ -22,7 +24,7 @@ public class EchoEdgeService extends EdgeDiscoveryService {
     private static final Logger LOGGER = Logger.getLogger(EchoEdgeService.class.getName());
 	
 	// OCI service name
-	public final static String	SERVICE_NAME	= "mockService";
+	public final static String	SERVICE_NAME	= "EchoEdgeService";
 	public final static int		SERVICE_PORT	= 9292;
 	
 		
@@ -35,6 +37,8 @@ public class EchoEdgeService extends EdgeDiscoveryService {
 
 		LOGGER.info("Try to open a server socket");
 		try {
+			ServiceNameRegistration.registerEdgeService(SERVICE_NAME, InetAddress.getByName("localhost"));
+			
 			@SuppressWarnings("resource")
 			ServerSocket serverSocket = new ServerSocket(SERVICE_PORT);
 			// TODO bind address implementation via service template or ServiceNameResolver e.g.:

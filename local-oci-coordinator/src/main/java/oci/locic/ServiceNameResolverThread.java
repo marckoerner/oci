@@ -11,7 +11,7 @@ import java.net.Socket;
 import oci.lib.ServiceNameEntry;
 
 /**
- * The ServiceNameResolverThread class implements and worker thread for the providing client requests with the edge service ip address
+ * The ServiceNameResolverThread class implements and worker thread for dealing with client name resolution requests
  * 
  * @author Marc Koerner
  */
@@ -42,30 +42,31 @@ public class ServiceNameResolverThread extends Thread {
 				ObjectInputStream	ois = new ObjectInputStream(serviceResolverClient.getInputStream());
 							
 				ServiceNameEntry serviceNameEntry = (ServiceNameEntry) ois.readObject();
-				if(serviceNameEntry == null) break;
-				
-				for(int i = 0; i < LocalOciCoordinator.serviceList.size(); i++) {
-					if(LocalOciCoordinator.serviceList.get(i).getServiceName().equals(serviceNameEntry.getServiceName())) {
-						
-						// TODO how to handle duplicated entries - currently client receives all matching service entries
-						if(serviceNameEntry.getIpAddress() == null) { // not necessary safety check
-							oos.writeObject(LocalOciCoordinator.serviceList.get(i));
-							oos.flush();
-							LocalOciCoordinator.LOGGER.info("Service name entry sent");
-
+				if(serviceNameEntry == null) {
+					LocalOciCoordinator.LOGGER.warning("NULL pointer from read on socket");
+					
+				} else {
+					for(int i = 0; i < LocalOciCoordinator.serviceList.size(); i++) {
+						if(LocalOciCoordinator.serviceList.get(i).getServiceName().equals(serviceNameEntry.getServiceName())) {
+							// TODO how to handle duplicated entries - currently client receives all matching service entries
+							if(serviceNameEntry.getIpAddress() == null) { // not necessary safety check
+								oos.writeObject(LocalOciCoordinator.serviceList.get(i));
+								oos.flush();
+								LocalOciCoordinator.LOGGER.info("Service name entry sent");
+							}
+						} else {
+							// signal name resolver client that there is no service entry
+							// oos.writeObject(null); // not necessary 
+							LocalOciCoordinator.LOGGER.info("No service name entry found");
 						}
-						
-					} else {
-						// signal name resolver client that there is no service entry
-						// oos.writeObject(null);
-						LocalOciCoordinator.LOGGER.info("No service name entry found");
-					}
-
-				} // for
+					} // for
+				
+				} // if - else
 				
 				LocalOciCoordinator.LOGGER.info("Close service name resolver connection");
 				ois.close();
 				oos.close();
+				serviceResolverClient.close();
 				
 			} // while
 		

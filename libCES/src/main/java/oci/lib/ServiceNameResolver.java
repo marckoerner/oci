@@ -26,6 +26,7 @@ public class ServiceNameResolver {
 	 * The method returns null if no service entry has been found.
 	 * 
 	 * @param serviceName Name of the edge service 
+	 * @return IP address of the edge service or null if something went wrong
 	 */
 	public final static InetAddress getEdgeServiceIpAddress(String serviceName) {
 		
