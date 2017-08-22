@@ -1,0 +1,6 @@
+{
+    "id": 1,
+    "name": "AwesomeThridPartyService",
+    "price": 12.50,
+    "location": ["LC2", "LC3"]
+}
