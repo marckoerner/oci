@@ -20,8 +20,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+
+import oci.gocic.types.ThridPartyMetaData;
 
 @Path("/files")
 @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -31,7 +35,7 @@ public class FileResource {
 	//	private static final String ThridParty_PATH = "C://oci-test//ThridParty";
 	private static final String GC_PATH = "C:\\oci-test\\GC\\";
 	private static final String LC1_PATH = "C:\\oci-test\\LC1\\";
-	private static final String LC2_PATH = "C:\\oci-test\\LC2\\";
+//	private static final String LC2_PATH = "C:\\oci-test\\LC2\\";
 
 	@GET
 	@Path("/{fileName}")
@@ -44,15 +48,20 @@ public class FileResource {
 		return response.build();
 	}
 
-	//TODO: REST POST must handover multiple parameters: edge service binary and metadata
-	
 	@POST
 	public Response addFile(
 			@FormDataParam("file") InputStream uploadedInputStream,
-			@FormDataParam("file") FormDataContentDisposition fileDetail) throws IOException {
+			@FormDataParam("file") FormDataContentDisposition fileDetail,
+			@FormDataParam("metadata") String metaDataBody) throws IOException {
+		
+//TODO:		@FormDataParam("metadata") FormDataBodyPart metaDataBody) throws IOException {		
+//		metaDataBody.setMediaType(MediaType.APPLICATION_JSON_TYPE);
+//		ThridPartyMetaData metadata = metaDataBody.getValueAs(ThridPartyMetaData.class);
+		
+		System.out.println(metaDataBody);
 
 		String gcFilePath = GC_PATH + fileDetail.getFileName();
-		
+			
 		try {	
 			OutputStream out = new FileOutputStream(new File(gcFilePath));
 			int read = 0;
