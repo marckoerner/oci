@@ -1,7 +1,7 @@
 /**
  * 
  */
-package oci.gocic.client;
+package oci.thirdparty.clients;
 
 import java.io.IOException;
 
@@ -21,7 +21,7 @@ public class DeleteFileClient {
 
 	public static void main(String[] args) throws IOException 
 	{	    
-	    String Uri = "http://localhost:8080/messenger/webapi/files";
+	    String Uri = "http://localhost:8080/gocic/webapi/files";
 	    String fileName = "hamburger.png";
 	    
 	    Client client = ClientBuilder.newClient();
