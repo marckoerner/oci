@@ -61,6 +61,7 @@ public class ServiceNameRegistration {
 			
 			ois.close();
 			oos.close();
+			locicSocket.close();
 			
 			ret = id;
 						

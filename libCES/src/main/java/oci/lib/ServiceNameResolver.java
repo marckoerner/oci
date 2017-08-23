@@ -51,6 +51,7 @@ public class ServiceNameResolver {
 			
 			ois.close();
 			oos.close();
+			locicSocket.close();
 			
 			ip = edgeServiceEntry.getIpAddress();
 			
