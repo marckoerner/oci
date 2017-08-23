@@ -10,13 +10,13 @@ import java.net.InetAddress;
  */
 public class ServiceNameEntry implements Serializable {
 	
-	private static final long	serialVersionUID = 1L;
-	public	static final int 	NO_KEY = -1;
+	public	static final int 	NO_KEY				= -1;
+	private static final long	serialVersionUID	= 1L;
 	
 	private String		serviceName	= null;
 	private InetAddress ip			= null;
 	private int			key			= NO_KEY;
-	
+		
 	/**
 	 * Constructor
 	 * @param serviceName Name of the edge service

@@ -50,18 +50,18 @@ public class ServiceNameRegistrationThread extends Thread {
 					// new edge service registration
 					if(serviceNameEntry.getKey() == ServiceNameEntry.NO_KEY) {
 						
-						boolean serviceEntryAlreadyInUse = false;
+						boolean serviceEntryNameAlreadyInUse = false;
 						int key = ServiceNameEntry.NO_KEY;
 						
 						// check if service name is already in use before adding it to the service vector
 						for(int i = 0; i < LocalOciCoordinator.serviceList.size(); i++) {
 							if(LocalOciCoordinator.serviceList.get(i).getServiceName().equals(serviceNameEntry.getServiceName())) {
-								serviceEntryAlreadyInUse = true;
+								serviceEntryNameAlreadyInUse = true;
 								break;
 							}
 						}
 						
-						if(serviceEntryAlreadyInUse) {
+						if(serviceEntryNameAlreadyInUse) {
 							LocalOciCoordinator.LOGGER.info("Service entry: " + serviceNameEntry.toString() + " name already in use");
 						} else {
 							// generate random service entry key
