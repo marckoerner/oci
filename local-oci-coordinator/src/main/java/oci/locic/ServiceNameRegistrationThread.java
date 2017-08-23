@@ -44,18 +44,36 @@ public class ServiceNameRegistrationThread extends Thread {
 				
 				// obtain service entry and add it to LOCIC service entry vector
 				ServiceNameEntry serviceNameEntry = (ServiceNameEntry) ois.readObject();
-				// TODO check if entry is already available before adding it to the vector
-				// TODO generate unique service id and send it back to edge service for the unregistration
+				
 				if(serviceNameEntry != null) {
 					
 					// new edge service registration
 					if(serviceNameEntry.getKey() == ServiceNameEntry.NO_KEY) {
-						int id = new Random().nextInt(Integer.MAX_VALUE); // generate int between 0 and MAX_INT
-						serviceNameEntry.setKey(id);
-						oos.writeInt(id);
+						
+						boolean serviceEntryAlreadyInUse = false;
+						int key = ServiceNameEntry.NO_KEY;
+						
+						// check if service name is already in use before adding it to the service vector
+						for(int i = 0; i < LocalOciCoordinator.serviceList.size(); i++) {
+							if(LocalOciCoordinator.serviceList.get(i).getServiceName().equals(serviceNameEntry.getServiceName())) {
+								serviceEntryAlreadyInUse = true;
+								break;
+							}
+						}
+						
+						if(serviceEntryAlreadyInUse) {
+							LocalOciCoordinator.LOGGER.info("Service entry: " + serviceNameEntry.toString() + " name already in use");
+						} else {
+							// generate random service entry key
+							key = new Random().nextInt(Integer.MAX_VALUE); // generate int between 0 and MAX_INT
+							serviceNameEntry.setKey(key);
+							LocalOciCoordinator.serviceList.add(serviceNameEntry);
+							LocalOciCoordinator.LOGGER.info("ServiceNameEntry received:" + serviceNameEntry.toString());
+						}
+						
+						// send return value back to service registration client aka edge service
+						oos.writeInt(key);
 						oos.flush();
-						LocalOciCoordinator.serviceList.add(serviceNameEntry);
-						LocalOciCoordinator.LOGGER.info("ServiceNameEntry received:" + serviceNameEntry.toString());	
 					}
 					
 					// edge service un-registration
@@ -68,7 +86,7 @@ public class ServiceNameRegistrationThread extends Thread {
 							if(j.getKey() == serviceNameEntry.getKey() && j.getServiceName().equals(serviceNameEntry.getServiceName())) {
 								// delete service entry 
 								LocalOciCoordinator.serviceList.remove(i);
-								LocalOciCoordinator.LOGGER.info("Service entry: " + j.toString() + "deleted");
+								LocalOciCoordinator.LOGGER.info("Service entry: " + j.toString() + " deleted");
 								oos.writeInt(ServiceNameEntry.NO_KEY);
 								oos.flush();
 								ret = true;
