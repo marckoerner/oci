@@ -61,7 +61,7 @@ public class ServiceNameRegistrationThread extends Thread {
 							}
 						}
 						
-						if(serviceEntryNameAlreadyInUse == null) {
+						if(serviceEntryNameAlreadyInUse != null) {
 							LocalOciCoordinator.LOGGER.info("Service entry: " + serviceEntryNameAlreadyInUse.toString() + " name already in use");
 						} else {
 							// generate random service entry key
