@@ -19,8 +19,8 @@ import javax.ws.rs.core.Response;
 public class DeleteFileClient {
 	
 
-	public static void main(String[] args) throws IOException 
-	{	    
+	public static void main(String[] args) throws IOException
+	{
 	    String Uri = "http://localhost:8080/gocic/webapi/files";
 	    String fileName = "hamburger.png";
 	    

@@ -27,9 +27,11 @@ import oci.thirdparty.types.ThridPartyMetaData;
  * @author runge
  *
  */
+
+// TODO integrate Update und Delete Client
 public class UploadFileClient {
 
-	public static void main(String[] args) throws IOException 	{
+	public static void main(String[] args) throws IOException {
 
 		final String OCI_PATH = "C:\\oci-test\\";
 		final String OCI_THIRDPARTY_PATH = OCI_PATH + "ThirdParty\\";
