@@ -11,10 +11,12 @@ import java.net.InetAddress;
  */
 public class ServiceNameEntry implements Serializable {
 	
-	private static final long serialVersionUID = 1L;
+	private static final long	serialVersionUID = 1L;
+	public	static final int 	NO_KEY = -1;
 	
 	private String		serviceName	= null;
 	private InetAddress ip			= null;
+	private int			key			= NO_KEY;
 	
 	
 	public ServiceNameEntry(String serviceName, InetAddress ip) {
@@ -30,17 +32,26 @@ public class ServiceNameEntry implements Serializable {
 		return this.serviceName;
 	}
 	
+	public void setKey(int key) {
+		this.key = key;
+	}
+	
+	public int getKey() {
+		return this.key;
+	}
+	
 	@Override
 	public String toString() {
-		String returnValue = "";
-		returnValue += this.serviceName;
+		String returnValue = this.key + ":";
+		returnValue += this.serviceName + "@";
 		returnValue += this.ip.toString();
 		return returnValue;
 	}
 	
 	public boolean equals(ServiceNameEntry entry) {
 		boolean returnValue = false;
-		if(this.serviceName == entry.getServiceName()
+		if(		this.key				== entry.getKey()
+				&& this.serviceName == entry.getServiceName()
 				&& this.ip.equals(entry.getIpAddress())) returnValue = true;
 		return returnValue;
 	}

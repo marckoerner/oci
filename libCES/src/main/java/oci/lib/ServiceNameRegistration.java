@@ -21,25 +21,30 @@ public class ServiceNameRegistration {
     private final static int			SOCKET_TIMEOUT	= 5000; // 5 seconds timeout
 	
 	/**
-	 * This method registers an edge service an the local OCI coordinator
+	 * This method registers an edge service at the local OCI coordinator
 	 * @param serviceName Name of the edge service
 	 * @param ip IP address of the edge service
-	 * @return result of the registration
+	 * @return registration key if successful and 0 if an error appeared
 	 */
-	public final static boolean registerEdgeService(String serviceName, InetAddress ip) {
+	public final static int registerEdgeService(String serviceName, InetAddress ip) {
 		
 		ServiceNameEntry edgeServiceEntry = new ServiceNameEntry(serviceName, ip);
 		return registerEdgeService(edgeServiceEntry);
 	}
 	
 	/**
-	 * This method registers an edge service an the local OCI coordinator
+	 * This method registers an edge service at the local OCI coordinator
 	 * @param serviceNameEntry Service name entry of the edge service
-	 * @return result of the registration
+	 * @return registration key if successful and ServiceNameEntry.NO_ID if an error appeared
 	 */
-	public final static boolean registerEdgeService(ServiceNameEntry serviceNameEntry) {
+	public final static int registerEdgeService(ServiceNameEntry serviceNameEntry) {
 		
-		boolean ret = true;
+		// TODO: check method parameters for safety
+		
+		int ret = ServiceNameEntry.NO_KEY;
+		
+		if(		serviceNameEntry.getServiceName() == null 
+				|| serviceNameEntry.getIpAddress() == null) return ret;
 		
 		try {
 			Socket locicSocket = new Socket(InetAddress.getByAddress(IPADDRESS), PORT);
@@ -52,30 +57,47 @@ public class ServiceNameRegistration {
 			oos.writeObject(serviceNameEntry);
 			oos.flush();
 			
+			int id = ois.readInt();
+			serviceNameEntry.setKey(id); 
+			
 			ois.close();
 			oos.close();
 			
-			ret = true;
+			ret = id;
 						
 		} catch (IOException e) {
 			e.printStackTrace();
-			ret = false;
 		}
 		
 		return ret;
 	}
 	
 	/**
-	 * Registers a service with IP address of the first local IP address
-	 * 
-	 * @param serviceName Name of the service
-	 * @return
+	 * This method un-registers an edge service at the local OCI coordinator
+	 * @param serviceName Name of the edge service
+	 * @param registrationKey return value of the registration aka registration key
+	 * @return true if service was successful un-registered
 	 */
-	public boolean registerEdgeService(String serviceName) {
+	public final static boolean unregisterEdgeService(String serviceName, int registrationKey) {	
 		
-		return true;
+		ServiceNameEntry serviceNameEntry = new ServiceNameEntry(serviceName, null);
+		serviceNameEntry.setKey(registrationKey);	
+		return unregisterEdgeService(serviceNameEntry);	
 	}
 	
+	/**
+	 * This method un-registers an edge service at the local OCI coordinator
+	 * @param serviceNameEntry Service name entry of the edge service
+	 * @return true if service was successful un-registered
+	 */
+	public final static boolean unregisterEdgeService(ServiceNameEntry serviceNameEntry) {
+		
+		// TODO: check method parameters for safety
+		
+		boolean ret = true;
+		if(serviceNameEntry.getKey() == registerEdgeService(serviceNameEntry)) ret = false;
+		return ret;
+	}
 	
 
 } // class ServiceNameRegistration
