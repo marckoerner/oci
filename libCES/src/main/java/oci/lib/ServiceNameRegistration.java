@@ -10,8 +10,8 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 /**
+ * This class contains all methods for an edge service registration and un-registration at the local OCI coordinator
  * @author Marc Koerner
- *
  */
 public class ServiceNameRegistration {
 	
@@ -50,7 +50,6 @@ public class ServiceNameRegistration {
 			Socket locicSocket = new Socket(InetAddress.getByAddress(IPADDRESS), PORT);
 			locicSocket.setSoTimeout(SOCKET_TIMEOUT);
 			
-			// create object streams
 			ObjectOutputStream	oos = new ObjectOutputStream(locicSocket.getOutputStream());
 			ObjectInputStream	ois = new ObjectInputStream(locicSocket.getInputStream());			
 			
