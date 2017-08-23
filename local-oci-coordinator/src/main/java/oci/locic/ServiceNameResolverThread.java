@@ -46,20 +46,24 @@ public class ServiceNameResolverThread extends Thread {
 					LocalOciCoordinator.LOGGER.warning("NULL pointer from read on socket");
 					
 				} else {
+					
+					boolean serviceNameEntryAvailable = false;
 					for(int i = 0; i < LocalOciCoordinator.serviceList.size(); i++) {
-						if(LocalOciCoordinator.serviceList.get(i).getServiceName().equals(serviceNameEntry.getServiceName())) {
-							// TODO how to handle duplicated entries - currently client receives all matching service entries
-							if(serviceNameEntry.getIpAddress() == null) { // not necessary safety check
-								oos.writeObject(LocalOciCoordinator.serviceList.get(i));
-								oos.flush();
-								LocalOciCoordinator.LOGGER.info("Service name entry sent");
-							}
-						} else {
-							// signal name resolver client that there is no service entry
-							// oos.writeObject(null); // not necessary 
-							LocalOciCoordinator.LOGGER.info("No service name entry found");
-						}
+						
+						if(LocalOciCoordinator.serviceList.get(i).getServiceName().equals(serviceNameEntry.getServiceName())
+								&& serviceNameEntry.getIpAddress() == null) { // not necessary safety check
+							
+							serviceNameEntryAvailable = true;
+							oos.writeObject(LocalOciCoordinator.serviceList.get(i));
+							oos.flush();
+							LocalOciCoordinator.LOGGER.info("Service name entry sent");
+							break;
+						} 
 					} // for
+						
+					if(!serviceNameEntryAvailable) {
+						LocalOciCoordinator.LOGGER.info("No service name entry found");
+					}
 				
 				} // if - else
 				
