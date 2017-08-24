@@ -10,6 +10,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Logger;
 
+import oci.lib.ServiceNameEntry;
 import oci.lib.ServiceNameRegistration;
 import oci.template.EdgeDiscoveryService;
 
@@ -37,7 +38,13 @@ public class EchoEdgeService extends EdgeDiscoveryService {
 
 		LOGGER.info("Try to open a server socket");
 		try {
-			ServiceNameRegistration.registerEdgeService(SERVICE_NAME, InetAddress.getByName("localhost"));
+			
+			int serviceKey = ServiceNameRegistration.registerEdgeService(SERVICE_NAME, InetAddress.getByName("localhost"));
+			if(serviceKey == ServiceNameEntry.NO_KEY) {
+				LOGGER.info("Service Name Registration failed");
+				LOGGER.info("Exit program");
+				return;
+			}
 			
 			@SuppressWarnings("resource")
 			ServerSocket serverSocket = new ServerSocket(SERVICE_PORT);
@@ -59,6 +66,9 @@ public class EchoEdgeService extends EdgeDiscoveryService {
                 System.out.println(inputLine);
                 if(inputLine.equals("exit")) break;
             } // while
+            
+            boolean serviceUnregistered = ServiceNameRegistration.unregisterEdgeService(SERVICE_NAME, serviceKey);
+			LOGGER.info("unregisterEdgeService: " + serviceUnregistered);
 			
 		} catch (Exception error) {
 			LOGGER.warning(error.getMessage());

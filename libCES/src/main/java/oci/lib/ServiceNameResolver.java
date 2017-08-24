@@ -32,10 +32,8 @@ public class ServiceNameResolver {
 		
 		InetAddress ip = null;
 		
-		// get Edge Service IP address via OCI name resolution protocol (UDP)
-		try {
-			// ip = InetAddress.getByAddress(IPADDRESS); // hard coded dummy (deprecated)
-			
+		// TODO get Edge Service IP address via OCI name resolution protocol (UDP)
+		try {			
 			Socket locicSocket = new Socket(InetAddress.getByAddress(IPADDRESS), PORT);
 			locicSocket.setSoTimeout(SOCKET_TIMEOUT);
 			

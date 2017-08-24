@@ -49,7 +49,7 @@ public class ServiceNameRegistration {
 		
 		try {
 			Socket locicSocket = new Socket(InetAddress.getByAddress(IPADDRESS), PORT);
-			//locicSocket.setSoTimeout(SOCKET_TIMEOUT);
+			locicSocket.setSoTimeout(SOCKET_TIMEOUT);
 			
 			ObjectOutputStream	oos = new ObjectOutputStream(locicSocket.getOutputStream());
 			ObjectInputStream	ois = new ObjectInputStream(locicSocket.getInputStream());			

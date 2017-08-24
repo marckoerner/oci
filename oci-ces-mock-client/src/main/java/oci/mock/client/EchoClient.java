@@ -45,6 +45,12 @@ public class EchoClient {
 			// connect to edge service using the OCI ServiceNameResolver (OCI CESlib)
 			LOGGER.fine("Try to find OCI name service and resolve service IP");
 			InetAddress ip = ServiceNameResolver.getEdgeServiceIpAddress(SERVICE_NAME);
+			if(ip == null) {
+				LOGGER.fine("No service found");
+				LOGGER.info("Exit program");
+				return;
+			}
+			
 			LOGGER.fine("successful - service IP is " + ip.toString());
 			clientSocket = new Socket(ip, SERVICE_PORT);
 			LOGGER.info("connected");
