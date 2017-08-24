@@ -31,7 +31,7 @@ import oci.thirdparty.types.ThridPartyMetaData;
 @Path("/files")
 @Consumes(MediaType.MULTIPART_FORM_DATA)
 @Produces(MediaType.MULTIPART_FORM_DATA)
-public class FileResource {
+public class ThirdPartyWebService {
 
 	private static final String OCI_PATH = "C:\\oci-test\\";
 	private static final String OCI_GC_PATH = OCI_PATH + "GC\\";
@@ -95,7 +95,9 @@ public class FileResource {
         while(itr.hasNext()){
 			try {
 				// run the copy command using the Runtime exec method:
-				//TODO: should be for Linux with the help of scp			
+				//TODO: should be for Linux with the help of scp
+				// Example: scp /home/stacy/images/image*.jpg stacy@myhost.com:/home/stacy/archive
+//				String command = "scp " + gcFilePath.toString() + " " + "user@" + gocic.getIpAddress(metaDataObject.getName()) + ":" + OCI_PATH;
 				String command = "cmd.exe /C copy " + gcFilePath.toString() + " " + OCI_PATH + itr.next();
 				Process p = Runtime.getRuntime().exec(command);
 
@@ -160,20 +162,17 @@ public class FileResource {
 	@DELETE
 	@Path("/{fileName}")
 	public Response deleteFile(@PathParam("fileName") String fileName) {
-
 		boolean bool = false;
-
 		File file = new File(OCI_GC_PATH + fileName);
 		bool = file.delete();
 
-		if (bool)  {
+		if (bool) {
 			String output = "File deleted : "+ OCI_GC_PATH + fileName;
 			return Response.status(200).entity(output).build();			
 		}
-		else
-		{
+		else {
 			String output = "ERROR: File cannot be deleted : "+ OCI_GC_PATH + fileName;
-			return Response.status(500).entity(output).build();	
+			return Response.status(500).entity(output).build();
 		}
 	}
 }

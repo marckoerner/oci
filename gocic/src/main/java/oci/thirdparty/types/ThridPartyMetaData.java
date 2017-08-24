@@ -26,7 +26,6 @@ public class ThridPartyMetaData {
 		return fileName;
 	}
 
-
 	/**
 	 * @param fileName the fileName to set
 	 */
