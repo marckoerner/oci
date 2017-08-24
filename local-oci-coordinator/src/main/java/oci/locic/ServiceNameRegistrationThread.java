@@ -50,6 +50,7 @@ public class ServiceNameRegistrationThread extends Thread {
 					// new edge service registration
 					if(serviceNameEntry.getKey() == ServiceNameEntry.NO_KEY) {
 						
+						LocalOciCoordinator.LOGGER.info("Service registration request");
 						ServiceNameEntry serviceEntryNameAlreadyInUse = null;
 						int key = ServiceNameEntry.NO_KEY;
 						
@@ -68,7 +69,7 @@ public class ServiceNameRegistrationThread extends Thread {
 							key = new Random().nextInt(Integer.MAX_VALUE); // generate int between 0 and MAX_INT
 							serviceNameEntry.setKey(key);
 							LocalOciCoordinator.serviceList.add(serviceNameEntry);
-							LocalOciCoordinator.LOGGER.info("ServiceNameEntry received:" + serviceNameEntry.toString());
+							LocalOciCoordinator.LOGGER.info("ServiceNameEntry received and added to list: " + serviceNameEntry.toString());
 						}
 						
 						// send return value back to service registration client aka edge service
@@ -78,11 +79,14 @@ public class ServiceNameRegistrationThread extends Thread {
 					
 					// edge service un-registration
 					else {
+						
+						LocalOciCoordinator.LOGGER.info("Service un-registration request");
 						boolean ret = false;
 
 						for(int i = 0; i < LocalOciCoordinator.serviceList.size(); i++) {
+							// TODO check on null pointer
 							ServiceNameEntry j = LocalOciCoordinator.serviceList.get(i);
-							
+														
 							if(j.getKey() == serviceNameEntry.getKey() && j.getServiceName().equals(serviceNameEntry.getServiceName())) {
 								// delete service entry 
 								LocalOciCoordinator.serviceList.remove(i);
