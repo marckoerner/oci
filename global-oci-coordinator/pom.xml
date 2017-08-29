@@ -2,5 +2,89 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>oci.gocic</groupId>
   <artifactId>global-oci-coordinator</artifactId>
+  <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
+  <name>global-oci-coordinator</name>
+  
+  <build>
+        <finalName>global-oci-coordinator</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.5.1</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
+  <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.glassfish.jersey</groupId>
+                <artifactId>jersey-bom</artifactId>
+                <version>${jersey.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+  </dependencyManagement>
+  
+    <dependencies>
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet-core</artifactId>
+            <!-- use the following artifactId if you don't need servlet 2.x compatibility -->
+            <!-- artifactId>jersey-container-servlet</artifactId -->
+        </dependency>
+        <!-- uncomment this to get JSON support
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-moxy</artifactId>
+        </dependency>
+        -->
+        <dependency>
+        	<groupId>org.glassfish.jersey.media</groupId>
+        	<artifactId>jersey-media-multipart</artifactId>
+        </dependency>
+        <dependency>
+        	<groupId>com.google.code.gson</groupId>
+        	<artifactId>gson</artifactId>
+        	<version>2.8.1</version>
+        </dependency>
+    <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-server</artifactId>
+        <version>9.2.3.v20140905</version>
+    </dependency>
+    <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-servlet</artifactId>
+        <version>9.2.3.v20140905</version>
+    </dependency>
+    <dependency>
+        <groupId>org.glassfish.jersey.core</groupId>
+        <artifactId>jersey-server</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.glassfish.jersey.containers</groupId>
+        <artifactId>jersey-container-servlet-core</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.glassfish.jersey.containers</groupId>
+        <artifactId>jersey-container-jetty-http</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.glassfish.jersey.media</groupId>
+        <artifactId>jersey-media-moxy</artifactId>
+    </dependency>       
+    </dependencies>
+    <properties>
+        <jersey.version>2.16</jersey.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 </project>
