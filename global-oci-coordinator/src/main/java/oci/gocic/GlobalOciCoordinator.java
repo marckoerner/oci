@@ -3,15 +3,17 @@
  */
 package oci.gocic;
 
-// import section
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.jersey.server.ServerProperties;
+import org.glassfish.jersey.servlet.ServletContainer;
+
 /**
- * @author marc koerner, torsten runge
+ * @author Torsten Runge
  *
  */
 public class GlobalOciCoordinator {
@@ -21,43 +23,32 @@ public class GlobalOciCoordinator {
 	 */
 	
     private static final Logger LOGGER = Logger.getLogger(GlobalOciCoordinator.class.getName());
-	
-	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		
+	public static void main(String[] args) throws Exception {
 		LOGGER.info("Logger Name: " + LOGGER.getName());
 		LOGGER.info("Global OCI Coordinator started");
 				
-		System.out.println("Type exit+Enter to stop the program");
-		
-		String inLine = "";
-		InputStreamReader	inputStreamReader	= new InputStreamReader(System.in);
-		BufferedReader		bufferedReader 		= new BufferedReader(inputStreamReader);
-				
-		// main loop - stops when user enters "exit"
-		boolean exit = false;
-		while(exit == false){
-					
-			try {
-				inLine = bufferedReader.readLine();
-			} catch (IOException error) {
-				LOGGER.warning(error.getMessage());
-				error.printStackTrace();
-			}
-					
-			if(inLine.equals("exit")) {
-				exit = true;
-			}
+        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+//		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
+        context.setContextPath("/");
 
-		} // while
-		
-		// example object instantiation 
-		TenantRestInterface restInterface = new TenantRestInterface();
-		restInterface.connect();
-		
-		CarrierRestInterface carrier = new CarrierRestInterface();
-		carrier.install();
-		carrier.uninstall();
+        Server jettyServer = new Server(9999);
+        jettyServer.setHandler(context);
+
+        ServletHolder jerseyServlet = context.addServlet(ServletContainer.class, "/*");
+        jerseyServlet.setInitOrder(0);
+
+        // Tells the Jersey Servlet which REST service/class to load.
+        jerseyServlet.setInitParameter("jersey.config.server.provider.packages", "oci.gocic");        
+        jerseyServlet.setInitParameter(ServerProperties.PROVIDER_CLASSNAMES, MultiPartFeature.class.getCanonicalName());
+
+        try {
+            jettyServer.start();
+            jettyServer.join();
+        }
+        finally {
+            jettyServer.destroy();
+        }
 				
 		LOGGER.info("Global OCI Coordinator stopped");
 
