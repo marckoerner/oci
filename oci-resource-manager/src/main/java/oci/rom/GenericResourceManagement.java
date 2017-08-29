@@ -9,7 +9,7 @@ import java.net.InetAddress;
  * Generic interface for the implementation of a particular resource management environment
  * @author Marc Koerner
  */
-public interface GenericResourceManagment {
+public interface GenericResourceManagement {
 	
 	/**
 	 * Validates if sufficient resources are available in order to start a new instance of a given edge service

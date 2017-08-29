@@ -3,7 +3,12 @@ package oci.rom;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-public class MockResourceManagement implements GenericResourceManagment {
+/**
+ * Mock resource management implementation.
+ * @author Marc Koerner
+ */
+
+public class MockResourceManagement implements GenericResourceManagement {
 	
 	private String edgeServiceFileName = null;
 	
@@ -22,12 +27,14 @@ public class MockResourceManagement implements GenericResourceManagment {
 	}
 
 	public InetAddress getEdgeServiceIP() {
+		InetAddress ip = null;
 		try {
-			return InetAddress.getByAddress(new byte[] {127, 0, 0, 1});
+			ip = InetAddress.getByAddress(new byte[] {127, 0, 0, 1});
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-		return null;
+		System.out.println("Edge Service " + this.edgeServiceFileName + " IP address = " + ip.toString());
+		return ip;
 	}
 
 	public boolean resourcesAvailable() {
