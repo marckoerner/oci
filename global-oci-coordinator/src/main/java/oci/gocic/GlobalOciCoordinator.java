@@ -30,7 +30,7 @@ public class GlobalOciCoordinator {
 				
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 //		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
-        context.setContextPath("/");
+        context.setContextPath("/gc");
 
         Server jettyServer = new Server(9999);
         jettyServer.setHandler(context);
@@ -52,6 +52,6 @@ public class GlobalOciCoordinator {
 				
 		LOGGER.info("Global OCI Coordinator stopped");
 
-	} // main
+	}
 
-} // class GlobalOciCoordinator
+}
