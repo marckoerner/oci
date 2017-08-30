@@ -24,7 +24,7 @@ import com.google.gson.Gson;
 import oci.thirdparty.types.ThridPartyMetaData;
 
 /**
- * @author runge
+ * @author Torsten Runge
  *
  */
 
@@ -74,7 +74,7 @@ public class UploadFileClient {
 		final FormDataMultiPart multipart = (FormDataMultiPart) formDataMultiPart.field("metadata", metaDataJsonString, MediaType.APPLICATION_JSON_TYPE).bodyPart(filePart);
 
 //		final WebTarget target = client.target("http://localhost:8080/gocic/webapi/files");
-		final WebTarget target = client.target("http://localhost:9999/files");
+		final WebTarget target = client.target("http://localhost:9999/gc/files");
 		final Response response = target.request().post(Entity.entity(multipart, multipart.getMediaType()));
 
 		System.out.println(response.toString());
