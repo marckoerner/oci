@@ -32,6 +32,8 @@ import oci.thirdparty.types.ThridPartyMetaData;
 @Consumes(MediaType.MULTIPART_FORM_DATA)
 @Produces(MediaType.MULTIPART_FORM_DATA)
 public class ThirdPartyWebService {
+	
+	static GlobalOciCoordinator gc;
 
 	private static final String OCI_PATH = "C:\\oci-test\\";
 	private static final String OCI_GC_PATH = OCI_PATH + "GC\\";
@@ -51,7 +53,7 @@ public class ThirdPartyWebService {
 	public Response addFile(
 			@FormDataParam("file") InputStream uploadedInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail,
-			@FormDataParam("metadata") String metaDataJson) throws IOException {		
+			@FormDataParam("metadata") String metaDataJson) throws IOException {
 
 		//		System.out.println(metaDataJson);
 
@@ -65,7 +67,7 @@ public class ThirdPartyWebService {
 
 		String gcFilePath = OCI_GC_PATH + fileDetail.getFileName();
 
-		try {	
+		try {
 			OutputStream out = new FileOutputStream(new File(gcFilePath));
 			int read = 0;
 			byte[] bytes = new byte[1024];
