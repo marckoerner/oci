@@ -33,15 +33,13 @@ import oci.thirdparty.types.ThridPartyMetaData;
 @Produces(MediaType.MULTIPART_FORM_DATA)
 public class ThirdPartyWebService {
 	
-	static GlobalOciCoordinator gc;
-
 	private static final String OCI_PATH = "C:\\oci-test\\";
 	private static final String OCI_GC_PATH = OCI_PATH + "GC\\";
 
 	@GET
 	@Path("/{fileName}")
 	public Response getFile(@PathParam("fileName") String fileName) {
-
+		
 		File file = new File(OCI_GC_PATH + fileName);
 		ResponseBuilder response = Response.ok((Object) file);
 		response.header("Content-Disposition",
@@ -89,19 +87,23 @@ public class ThirdPartyWebService {
 	}
 
 	// distribute to LCs as defined in metadata 
-	//TODO: (so mapping of LC to IPs is needed)
 	private void distributeToLocalCoordinators(String gcFilePath, ThridPartyMetaData metaDataObject) {
 		String s = null;
 		
         Iterator<String> itr = metaDataObject.getLocation().iterator();
-        while(itr.hasNext()){
+        while(itr.hasNext())
+        {
 			try {
 				// run the copy command using the Runtime exec method:
 				//TODO: should be for Linux with the help of scp
 				// Example: scp /home/stacy/images/image*.jpg stacy@myhost.com:/home/stacy/archive
 //				String command = "scp " + gcFilePath.toString() + " " + "user@" + gocic.getIpAddress(metaDataObject.getName()) + ":" + OCI_PATH;
-				String command = "cmd.exe /C copy " + gcFilePath.toString() + " " + OCI_PATH + itr.next();
+				String lcName = itr.next();
+				String command = "cmd.exe /C copy " + gcFilePath.toString() + " " + OCI_PATH + lcName;
 				Process p = Runtime.getRuntime().exec(command);
+				
+				// store the transfered files in the GC state		
+				GlobalOciCoordinator.localCoordinatorFiles.get(lcName).add(metaDataObject.getFileName());
 
 				BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 				BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
@@ -124,6 +126,8 @@ public class ThirdPartyWebService {
 				e.printStackTrace();
 			}
 		}
+        
+        GlobalOciCoordinator.printAllLocalCoordinatorFiles();
 	}
 
 	@PUT
