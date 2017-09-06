@@ -4,7 +4,6 @@
 package oci.rom;
 
 import java.io.BufferedReader;
-import java.io.Closeable;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.logging.Logger;
@@ -34,14 +33,12 @@ public class Manager {
 	
 		try {
 			
-			
-			
 			// connect to local OCI coordinator and start communication thread
-			Socket locic = new Socket();		
+			Socket locic = new Socket();
 			Thread locicCommunication = new LocicCommunicationThread(locic);
 			
 			InputStreamReader	inputStreamReader	= new InputStreamReader(System.in);
-			BufferedReader		stdIn		 		= new BufferedReader(inputStreamReader);					
+			BufferedReader		stdIn		 		= new BufferedReader(inputStreamReader);
 			String inputLine;
 			while ((inputLine = stdIn.readLine()) != null) {
 				// System.out.println(inputLine);

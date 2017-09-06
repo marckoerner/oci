@@ -66,6 +66,11 @@ public class LocalOciCoordinator {
 			LOGGER.info("Successful");
 			ServiceNameResolverThread serviceResolverWorker = new ServiceNameResolverThread(serviceResolverSocket);
 			serviceResolverWorker.start();
+			
+			// start resource and orchestration manager thread
+			LOGGER.info("Start Resource and Orchestration Manager");
+			ServerSocket resourceManagerSocket = new ServerSocket(ResourceManagerCommunicationThread.PORT);
+			ResourceManagerCommunicationThread resourceManagerWorker = new ResourceManagerCommunicationThread(resourceManagerSocket);
 
 			// read from cmd and wait for command EXIT or statistics
 			InputStreamReader	inputStreamReader	= new InputStreamReader(System.in);
@@ -81,6 +86,10 @@ public class LocalOciCoordinator {
 					serviceRegistrationWorker.join();
 					serviceResolverSocket.close();
 					serviceResolverWorker.join();
+					// shut down resource manager communication
+					resourceManagerSocket.close();
+					resourceManagerWorker.disconnect();
+					resourceManagerWorker.join();
 					break;
 				} //if exit
 				
