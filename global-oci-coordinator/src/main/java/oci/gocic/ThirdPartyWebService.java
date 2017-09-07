@@ -33,8 +33,10 @@ import oci.thirdparty.types.ThridPartyMetaData;
 @Produces(MediaType.MULTIPART_FORM_DATA)
 public class ThirdPartyWebService {
 
-	private static final String OCI_PATH = "C:\\oci-test\\";
-	private static final String OCI_GC_PATH = OCI_PATH + "GC\\";
+	//	private static final String OCI_PATH = "C:\\oci-test\\";
+	//	private static final String OCI_GC_PATH = OCI_PATH + "GC\\";
+	private static final String OCI_PATH = "/home/runge/oci-test/";
+	private static final String OCI_GC_PATH = OCI_PATH + "GC/";
 
 	@GET
 	@Path("/{fileName}")
@@ -51,7 +53,7 @@ public class ThirdPartyWebService {
 	public Response addFile(
 			@FormDataParam("file") InputStream uploadedInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail,
-			@FormDataParam("metadata") String metaDataJson) throws IOException {		
+			@FormDataParam("metadata") String metaDataJson) throws IOException {
 
 		//		System.out.println(metaDataJson);
 
@@ -65,7 +67,7 @@ public class ThirdPartyWebService {
 
 		String gcFilePath = OCI_GC_PATH + fileDetail.getFileName();
 
-		try {	
+		try {
 			OutputStream out = new FileOutputStream(new File(gcFilePath));
 			int read = 0;
 			byte[] bytes = new byte[1024];
@@ -87,19 +89,23 @@ public class ThirdPartyWebService {
 	}
 
 	// distribute to LCs as defined in metadata 
-	//TODO: (so mapping of LC to IPs is needed)
 	private void distributeToLocalCoordinators(String gcFilePath, ThridPartyMetaData metaDataObject) {
 		String s = null;
-		
-        Iterator<String> itr = metaDataObject.getLocation().iterator();
-        while(itr.hasNext()){
-			try {
-				// run the copy command using the Runtime exec method:
-				//TODO: should be for Linux with the help of scp
-				// Example: scp /home/stacy/images/image*.jpg stacy@myhost.com:/home/stacy/archive
-//				String command = "scp " + gcFilePath.toString() + " " + "user@" + gocic.getIpAddress(metaDataObject.getName()) + ":" + OCI_PATH;
-				String command = "cmd.exe /C copy " + gcFilePath.toString() + " " + OCI_PATH + itr.next();
+
+		Iterator<String> itr = metaDataObject.getLocation().iterator();
+		while(itr.hasNext())
+		{
+			try {				
+				String lcName = itr.next();
+				// run the copy command using the Runtime exec method				
+				// String command = "cmd.exe /C copy " + gcFilePath.toString() + " " + OCI_PATH + lcName;			
+				// String command = "sshpass -p \"oci-test\" scp " + gcFilePath.toString() + " " + "runge@" + GlobalOciCoordinator.getLocalCoordinator(lcName).getIp().getHostAddress() + ":" + OCI_PATH + lcName;
+				// String command = "cp " + gcFilePath.toString() + " " + OCI_PATH + lcName;
+				String command = "scp " + gcFilePath.toString() + " " + "runge@" + GlobalOciCoordinator.getLocalCoordinator(lcName).getIp().getHostAddress() + ":" + OCI_PATH + lcName;
 				Process p = Runtime.getRuntime().exec(command);
+
+				// store the transfered files in the GC state		
+				GlobalOciCoordinator.localCoordinatorFiles.get(lcName).add(metaDataObject.getFileName());
 
 				BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 				BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
@@ -122,6 +128,8 @@ public class ThirdPartyWebService {
 				e.printStackTrace();
 			}
 		}
+
+		GlobalOciCoordinator.printAllLocalCoordinatorFiles();
 	}
 
 	@PUT
