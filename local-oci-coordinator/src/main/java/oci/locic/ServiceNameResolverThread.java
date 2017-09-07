@@ -17,10 +17,12 @@ import oci.lib.ServiceNameEntry;
  */
 public class ServiceNameResolverThread extends Thread {
 	
-	private ServerSocket	serverSocket	= null;
+	private ServerSocket						serverSocket	= null;
+	private ResourceManagerCommunicationThread	resourceManager	= null;
 	
-	public ServiceNameResolverThread(ServerSocket serverSocket) {
-		this.serverSocket = serverSocket;
+	public ServiceNameResolverThread(ServerSocket serverSocket, ResourceManagerCommunicationThread resourceManager) {
+		this.serverSocket		= serverSocket;
+		this.resourceManager	= resourceManager;
 	}
 	
 	@Override 
@@ -63,6 +65,9 @@ public class ServiceNameResolverThread extends Thread {
 						
 					if(!serviceNameEntryAvailable) {
 						LocalOciCoordinator.LOGGER.info("No service name entry found");
+						
+						// call resource manager / ask to start the not yet available service
+						this.resourceManager.serviceRequest(serviceNameEntry.getServiceName());
 					}
 				
 				} // if - else

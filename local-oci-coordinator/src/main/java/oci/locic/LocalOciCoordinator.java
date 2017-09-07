@@ -60,18 +60,18 @@ public class LocalOciCoordinator {
 			ServiceNameRegistrationThread serviceRegistrationWorker = new ServiceNameRegistrationThread(serviceRegistrationSocket);
 			serviceRegistrationWorker.start();
 			
-			// start service resolver thread
-			LOGGER.info("Try to open a OCI name resolution port (" + ServiceNameResolver.PORT + ")");
-			ServerSocket serviceResolverSocket = new ServerSocket(ServiceNameResolver.PORT);
-			LOGGER.info("Successful");
-			ServiceNameResolverThread serviceResolverWorker = new ServiceNameResolverThread(serviceResolverSocket);
-			serviceResolverWorker.start();
-			
 			// start resource and orchestration manager thread
 			LOGGER.info("Start Resource and Orchestration Manager");
 			ServerSocket resourceManagerSocket = new ServerSocket(ResourceManagerCommunicationThread.PORT);
 			ResourceManagerCommunicationThread resourceManagerWorker = new ResourceManagerCommunicationThread(resourceManagerSocket);
-
+			
+			// start service resolver thread
+			LOGGER.info("Try to open a OCI name resolution port (" + ServiceNameResolver.PORT + ")");
+			ServerSocket serviceResolverSocket = new ServerSocket(ServiceNameResolver.PORT);
+			LOGGER.info("Successful");
+			ServiceNameResolverThread serviceResolverWorker = new ServiceNameResolverThread(serviceResolverSocket, resourceManagerWorker);
+			serviceResolverWorker.start();
+			
 			// read from cmd and wait for command EXIT or statistics
 			InputStreamReader	inputStreamReader	= new InputStreamReader(System.in);
 			BufferedReader		stdIn		 		= new BufferedReader(inputStreamReader);					
