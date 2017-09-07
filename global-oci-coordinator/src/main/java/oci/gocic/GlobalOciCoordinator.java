@@ -100,7 +100,7 @@ public class GlobalOciCoordinator {
 
 	}
 
-	public LocalCoordinator getLocalCoordinator(String name) {
+	public static LocalCoordinator getLocalCoordinator(String name) {
 		return localCoordinators.get(name);
 	}
 
@@ -111,7 +111,7 @@ public class GlobalOciCoordinator {
 		return lc;
 	}
 
-	public LocalCoordinator removeLocalCoordinator(String name) {
+	public static LocalCoordinator removeLocalCoordinator(String name) {
 		return localCoordinators.remove(name);
 	}
 
