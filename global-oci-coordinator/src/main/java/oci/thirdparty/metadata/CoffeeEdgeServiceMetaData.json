@@ -1,6 +1,6 @@
 {
     "id": 1,
-    "name": "CoffeeEdgeService",
+    "serviceName": "CoffeeEdgeService",
     "fileName": "coffee.png",
     "price": 2.50,
     "location": ["LC2", "LC3"]

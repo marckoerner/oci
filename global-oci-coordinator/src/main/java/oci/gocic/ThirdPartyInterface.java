@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Iterator;
+import java.util.Vector;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -31,15 +32,17 @@ import oci.thirdparty.types.ThridPartyMetaData;
 @Path("/files")
 @Consumes(MediaType.MULTIPART_FORM_DATA)
 @Produces(MediaType.MULTIPART_FORM_DATA)
-public class ThirdPartyWebService {
-	
-	private static final String OCI_PATH = "C:\\oci-test\\";
-	private static final String OCI_GC_PATH = OCI_PATH + "GC\\";
+public class ThirdPartyInterface {
+
+	//	private static final String OCI_PATH = "C:\\oci-test\\";
+	//	private static final String OCI_GC_PATH = OCI_PATH + "GC\\";
+	private static final String OCI_PATH = "/home/runge/oci-test/";
+	private static final String OCI_GC_PATH = OCI_PATH + "GC/";
 
 	@GET
 	@Path("/{fileName}")
 	public Response getFile(@PathParam("fileName") String fileName) {
-		
+
 		File file = new File(OCI_GC_PATH + fileName);
 		ResponseBuilder response = Response.ok((Object) file);
 		response.header("Content-Disposition",
@@ -59,7 +62,7 @@ public class ThirdPartyWebService {
 		Gson g = new Gson();
 		ThridPartyMetaData metaDataObject = g.fromJson(metaDataJson, ThridPartyMetaData.class);
 
-		System.out.println("Name: " + metaDataObject.getName());
+		System.out.println("ServiceName: " + metaDataObject.getServiceName());
 		System.out.println("Price: " + metaDataObject.getPrice());
 		System.out.println("Location: " + metaDataObject.getLocation());
 
@@ -89,21 +92,23 @@ public class ThirdPartyWebService {
 	// distribute to LCs as defined in metadata 
 	private void distributeToLocalCoordinators(String gcFilePath, ThridPartyMetaData metaDataObject) {
 		String s = null;
-		
-        Iterator<String> itr = metaDataObject.getLocation().iterator();
-        while(itr.hasNext())
-        {
-			try {
-				// run the copy command using the Runtime exec method:
-				//TODO: should be for Linux with the help of scp
-				// Example: scp /home/stacy/images/image*.jpg stacy@myhost.com:/home/stacy/archive
-//				String command = "scp " + gcFilePath.toString() + " " + "user@" + gocic.getIpAddress(metaDataObject.getName()) + ":" + OCI_PATH;
+		String fileName = metaDataObject.getFileName();
+		GlobalOciCoordinator.fileToLocalCoordinatorMap.put(fileName, new Vector<String>());
+
+		Iterator<String> itr = metaDataObject.getLocation().iterator();
+		while(itr.hasNext())
+		{
+			try {		
 				String lcName = itr.next();
-				String command = "cmd.exe /C copy " + gcFilePath.toString() + " " + OCI_PATH + lcName;
+				// run the copy command using the Runtime exec method				
+				// String command = "cmd.exe /C copy " + gcFilePath.toString() + " " + OCI_PATH + lcName;			
+				// String command = "sshpass -p \"oci-test\" scp " + gcFilePath.toString() + " " + "runge@" + GlobalOciCoordinator.getLocalCoordinator(lcName).getIp().getHostAddress() + ":" + OCI_PATH + lcName;
+				// String command = "cp " + gcFilePath.toString() + " " + OCI_PATH + lcName;
+				String command = "scp " + gcFilePath.toString() + " " + "runge@" + GlobalOciCoordinator.getLocalCoordinator(lcName).getIp().getHostAddress() + ":" + OCI_PATH + lcName;
 				Process p = Runtime.getRuntime().exec(command);
-				
-				// store the transfered files in the GC state		
-				GlobalOciCoordinator.localCoordinatorFiles.get(lcName).add(metaDataObject.getFileName());
+
+				// add the transfered files in the GC state		
+				GlobalOciCoordinator.fileToLocalCoordinatorMap.get(fileName).add(lcName);
 
 				BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 				BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
@@ -126,8 +131,8 @@ public class ThirdPartyWebService {
 				e.printStackTrace();
 			}
 		}
-        
-        GlobalOciCoordinator.printAllLocalCoordinatorFiles();
+
+		GlobalOciCoordinator.printAllLocalCoordinatorFiles();
 	}
 
 	@PUT
@@ -169,8 +174,29 @@ public class ThirdPartyWebService {
 	@Path("/{fileName}")
 	public Response deleteFile(@PathParam("fileName") String fileName) {
 		boolean bool = false;
-		File file = new File(OCI_GC_PATH + fileName);
+		File file;
+	
+		// remove file from all corresponding LCs
+		Iterator<String> itr = GlobalOciCoordinator.fileToLocalCoordinatorMap.get(fileName).iterator();
+		while(itr.hasNext())
+		{				
+			String lcName = itr.next();
+			file = new File(OCI_PATH + lcName + "/" + fileName);
+			bool = file.delete();
+
+			if (bool)
+				GlobalOciCoordinator.LOGGER.info(lcName + ": " + fileName + " deleted.");		
+			else
+				GlobalOciCoordinator.LOGGER.warning("Warning: " + lcName + ": " + fileName + " deleted.");
+		}
+		
+		
+		// remove file from GC and update GC state
+		file = new File(OCI_GC_PATH + fileName);
 		bool = file.delete();
+		
+		// remove the deleted files from the GC state
+		GlobalOciCoordinator.fileToLocalCoordinatorMap.remove(fileName);
 
 		if (bool) {
 			String output = "File deleted : "+ OCI_GC_PATH + fileName;

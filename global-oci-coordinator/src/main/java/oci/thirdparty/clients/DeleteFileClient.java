@@ -21,7 +21,7 @@ public class DeleteFileClient {
 
 	public static void main(String[] args) throws IOException
 	{
-	    String Uri = "http://localhost:9999/files";
+	    String Uri = "http://localhost:9999/gc/files";
 	    String fileName = "coffee.png";
 	    
 	    Client client = ClientBuilder.newClient();
