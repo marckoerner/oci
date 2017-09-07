@@ -21,19 +21,19 @@ public interface GenericResourceManagement {
 	 * Starts and bootstraps the give edge service
 	 * @return true if startup was successful
 	 */
-	public boolean startEdgeService();
+	public boolean startEdgeService(String edgeServiceName);
 	
 	/**
 	 * Stops the edge service
 	 * @return true if no error occurred
 	 */
-	public boolean stopEdgeService();
+	public boolean stopEdgeService(String edgeServiceName);
 	
 	/**
 	 * Obtains edge service IP address 
 	 * @return returns the IP address of the edge service
 	 */
-	public InetAddress getEdgeServiceIP(); 
+	public InetAddress getEdgeServiceIP(String edgeServiceName); 
 	
 	// public boolean edgeServiceIsRunning();
 			
