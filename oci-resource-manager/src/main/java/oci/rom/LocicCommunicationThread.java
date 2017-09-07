@@ -34,22 +34,22 @@ public class LocicCommunicationThread extends Thread {
 				
 				// wait on instructions from LOCIC
 				serviceName = (String) ois.readObject();
-				Manager.LOGGER.info("Try to start edge service");
+				ResourceAndOrchestrationManager.LOGGER.info("Try to start edge service");
 				
 				if(resourceManager.resourcesAvailable()) {
-					Manager.LOGGER.info("Resource are available");
+					ResourceAndOrchestrationManager.LOGGER.info("Resource are available");
 
 					if(resourceManager.startEdgeService(serviceName)) {
-						Manager.LOGGER.info("Edge Service " + serviceName + " started");
+						ResourceAndOrchestrationManager.LOGGER.info("Edge Service " + serviceName + " started");
 						oos.writeBoolean(true);
 					} else {
-						Manager.LOGGER.info("Edge Service " + serviceName + " not started due to unknown reason");
+						ResourceAndOrchestrationManager.LOGGER.info("Edge Service " + serviceName + " not started due to unknown reason");
 						oos.writeBoolean(false);
 					}
 					oos.flush();
 					
 				} else {
-					Manager.LOGGER.info("No resource available");
+					ResourceAndOrchestrationManager.LOGGER.info("No resource available");
 				}
 				
 			}
@@ -60,7 +60,7 @@ public class LocicCommunicationThread extends Thread {
 						// return IP
 					// stop
 		} catch(Exception error) {
-			Manager.LOGGER.warning(error.getMessage());
+			ResourceAndOrchestrationManager.LOGGER.warning(error.getMessage());
 		}
 		
 	}
