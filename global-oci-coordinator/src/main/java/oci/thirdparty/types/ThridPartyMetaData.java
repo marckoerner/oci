@@ -6,14 +6,14 @@ import java.util.Vector;
 public class ThridPartyMetaData {
 
 	int id;
-	String name;
+	String serviceName;
 	String fileName;
 	double price;
 	Vector<String> location;	
 
 	public ThridPartyMetaData(String name, String fileName, double price) {
 		super();
-		this.name = name;
+		this.serviceName = name;
 		this.fileName = fileName;
 		this.price = price;
 		this.location = new Vector<String>();
@@ -50,15 +50,15 @@ public class ThridPartyMetaData {
 	/**
 	 * @return the name
 	 */
-	public String getName() {
-		return name;
+	public String getServiceName() {
+		return serviceName;
 	}
 	
 	/**
 	 * @param name the name to set
 	 */
 	public void setName(String name) {
-		this.name = name;
+		this.serviceName = name;
 	}
 	
 	/**

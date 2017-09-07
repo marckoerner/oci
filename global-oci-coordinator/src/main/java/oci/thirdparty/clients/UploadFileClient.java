@@ -33,11 +33,15 @@ public class UploadFileClient {
 
 	public static void main(String[] args) throws IOException {
 
-		final String OCI_PATH = "C:\\oci-test\\";
-		final String OCI_THIRDPARTY_PATH = OCI_PATH + "ThirdParty\\";
+		//final String OCI_PATH = "C:\\oci-test\\";
+		//final String OCI_THIRDPARTY_PATH = OCI_PATH + "ThirdParty\\";
+
+		final String OCI_PATH = "/home/runge/oci-test/";
+		final String OCI_THIRDPARTY_PATH = OCI_PATH + "ThirdParty/";
 
 		String metaDataJsonFile = "";
-		metaDataJsonFile = "C:\\Users\\runge\\git\\oci\\global-oci-coordinator\\src\\main\\java\\oci\\thirdparty\\metadata\\CoffeeEdgeServiceMetaData.json";
+		//metaDataJsonFile = "C:\\Users\\runge\\git\\oci\\global-oci-coordinator\\src\\main\\java\\oci\\thirdparty\\metadata\\CoffeeEdgeServiceMetaData.json";
+		metaDataJsonFile = "./src/main/java/oci/thirdparty/metadata/CoffeeEdgeServiceMetaData.json";
 
 		String metaDataJsonString;
 		ThridPartyMetaData metaDataObject;
@@ -61,7 +65,7 @@ public class UploadFileClient {
 			metaDataJsonString = g.toJson(metaDataObject);			
 		}
 
-		System.out.println("Name: " + metaDataObject.getName());
+		System.out.println("Name: " + metaDataObject.getServiceName());
 		System.out.println("FileName: " + metaDataObject.getFileName());
 		System.out.println("Price: " + metaDataObject.getPrice());
 		System.out.println("Location: " + metaDataObject.getLocation());
@@ -73,7 +77,7 @@ public class UploadFileClient {
 		FormDataMultiPart formDataMultiPart = new FormDataMultiPart();	    
 		final FormDataMultiPart multipart = (FormDataMultiPart) formDataMultiPart.field("metadata", metaDataJsonString, MediaType.APPLICATION_JSON_TYPE).bodyPart(filePart);
 
-//		final WebTarget target = client.target("http://localhost:8080/gocic/webapi/files");
+		//final WebTarget target = client.target("http://localhost:8080/gocic/webapi/files");
 		final WebTarget target = client.target("http://localhost:9999/gc/files");
 		final Response response = target.request().post(Entity.entity(multipart, multipart.getMediaType()));
 
