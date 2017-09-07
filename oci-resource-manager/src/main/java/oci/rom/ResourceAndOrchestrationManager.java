@@ -17,9 +17,9 @@ import java.util.logging.Logger;
  * @author Marc Koerner
  *
  */
-public class Manager {
+public class ResourceAndOrchestrationManager {
 	
-    final static Logger			LOGGER			= Logger.getLogger(Manager.class.getName());
+    final static Logger			LOGGER			= Logger.getLogger(ResourceAndOrchestrationManager.class.getName());
     
 	/**
 	 * @param args

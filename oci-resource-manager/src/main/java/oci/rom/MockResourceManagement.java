@@ -4,7 +4,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 /**
- * Mock resource management implementation.
+ * Mock resource management implementation based on the regarding generic interface
  * @author Marc Koerner
  */
 
