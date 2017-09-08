@@ -4,7 +4,6 @@
 package oci.rom;
 
 import java.io.BufferedReader;
-import java.io.Closeable;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.logging.Logger;
@@ -30,18 +29,17 @@ public class Manager {
 		LOGGER.info("Resource and orchestration manager started");
 
 		// MockResourceManagement can later on be replaced with the regarding resource management implementation (E2, Mininet, OpenStack, ...)
-		GenericResourceManagement resourceManagement = (GenericResourceManagement) new MockResourceManagement("mockService");	
+		GenericResourceManagement resourceManagement = new MockResourceManagement("mockResourceManager");	
 	
 		try {
-			
-			
-			
 			// connect to local OCI coordinator and start communication thread
-			Socket locic = new Socket();		
-			Thread locicCommunication = new LocicCommunicationThread(locic);
+			Socket locic							= new Socket();
+			Thread locicCommunication				= new LocicCommunicationThread(locic, resourceManagement);
 			
 			InputStreamReader	inputStreamReader	= new InputStreamReader(System.in);
-			BufferedReader		stdIn		 		= new BufferedReader(inputStreamReader);					
+			BufferedReader		stdIn		 		= new BufferedReader(inputStreamReader);
+			
+			// main loop
 			String inputLine;
 			while ((inputLine = stdIn.readLine()) != null) {
 				// System.out.println(inputLine);
