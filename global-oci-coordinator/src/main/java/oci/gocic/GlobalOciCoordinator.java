@@ -29,9 +29,9 @@ public class GlobalOciCoordinator {
 	 */
 
 	static ConcurrentHashMap<String, LocalCoordinator> localCoordinators = new ConcurrentHashMap<>();
-	static ConcurrentHashMap<String, Vector<String>> localCoordinatorFiles = new ConcurrentHashMap<>();
+	static ConcurrentHashMap<String, Vector<String>> fileToLocalCoordinatorMap = new ConcurrentHashMap<>();
 
-	private static final Logger LOGGER = Logger.getLogger(GlobalOciCoordinator.class.getName());
+	public static final Logger LOGGER = Logger.getLogger(GlobalOciCoordinator.class.getName());
 
 	public static void main(String[] args) throws Exception {
 		LOGGER.info("Logger Name: " + LOGGER.getName());
@@ -87,7 +87,7 @@ public class GlobalOciCoordinator {
 	}
 
 	public static void printAllLocalCoordinatorFiles() {
-		for (ConcurrentHashMap.Entry<String, Vector<String>> entry : localCoordinatorFiles.entrySet()) {
+		for (ConcurrentHashMap.Entry<String, Vector<String>> entry : fileToLocalCoordinatorMap.entrySet()) {
 			String key = entry.getKey().toString();
 			Vector<String> value = entry.getValue();
 
@@ -105,10 +105,8 @@ public class GlobalOciCoordinator {
 	}
 
 	public static LocalCoordinator addLocalCoordinator(String name, InetAddress ip) {
-		LocalCoordinator lc = new LocalCoordinator(name, ip);
-		localCoordinators.put(name, lc);
-		localCoordinatorFiles.put(name, new Vector<String>());
-		return lc;
+		LocalCoordinator lc = new LocalCoordinator(name, ip);	
+		return localCoordinators.put(name, lc);
 	}
 
 	public static LocalCoordinator removeLocalCoordinator(String name) {
