@@ -5,8 +5,12 @@ package oci.rom;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.logging.Logger;
+
+import oci.locic.ResourceManagerCommunicationThread;
 
 /**
  * The Manager class implements the resource and orchestration manager. It 
@@ -19,7 +23,9 @@ import java.util.logging.Logger;
  */
 public class ResourceAndOrchestrationManager {
 	
-    final static Logger			LOGGER			= Logger.getLogger(ResourceAndOrchestrationManager.class.getName());
+    		final static Logger			LOGGER			= Logger.getLogger(ResourceAndOrchestrationManager.class.getName());
+    public	final static byte[]			LOCIC_IP		= {(byte) 127, (byte) 0, (byte) 0, (byte) 1}; 	// LOCIC IP
+    public	final static int			LOCIC_PORT		= ResourceManagerCommunicationThread.PORT;
     
 	/**
 	 * @param args
@@ -32,10 +38,15 @@ public class ResourceAndOrchestrationManager {
 		GenericResourceManagement resourceManagement = new MockResourceManagement("mockResourceManager");	
 	
 		try {
-			// connect to local OCI coordinator and start communication thread
-			Socket locic							= new Socket();
-			Thread locicCommunication				= new LocicCommunicationThread(locic, resourceManagement);
+			// connect to local OCI coordinator
+			LOGGER.info("Try to connect to LOCIC");
+			Socket locic							= new Socket(InetAddress.getByAddress(LOCIC_IP), LOCIC_PORT);
+			LOGGER.info("Connected to LOCIC");
 			
+			//  Instantiate and start communication thread
+			Thread locicCommunication				= new LocicCommunicationThread(locic, resourceManagement);
+			locicCommunication.start();
+						
 			InputStreamReader	inputStreamReader	= new InputStreamReader(System.in);
 			BufferedReader		stdIn		 		= new BufferedReader(inputStreamReader);
 			

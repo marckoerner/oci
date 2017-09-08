@@ -3,4 +3,11 @@
   <groupId>oci.rom</groupId>
   <artifactId>oci-resource-manager</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <dependencies>
+  	<dependency>
+  		<groupId>oci.locic</groupId>
+  		<artifactId>local-oci-coordinator</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  </dependencies>
 </project>
