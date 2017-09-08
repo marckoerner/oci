@@ -61,9 +61,12 @@ public class LocalOciCoordinator {
 			serviceRegistrationWorker.start();
 			
 			// start resource and orchestration manager thread
-			LOGGER.info("Start Resource and Orchestration Manager");
+			LOGGER.info("Try to start RnO Manager communication module listening on port (" + 
+					ResourceManagerCommunicationThread.PORT + ")");
 			ServerSocket resourceManagerSocket = new ServerSocket(ResourceManagerCommunicationThread.PORT);
+			LOGGER.info("Successful");
 			ResourceManagerCommunicationThread resourceManagerWorker = new ResourceManagerCommunicationThread(resourceManagerSocket);
+			resourceManagerWorker.start();
 			
 			// start service resolver thread
 			LOGGER.info("Try to open a OCI name resolution port (" + ServiceNameResolver.PORT + ")");

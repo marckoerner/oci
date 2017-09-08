@@ -24,6 +24,10 @@ public class LocicCommunicationThread extends Thread {
 		
 		String serviceName = null;
 		
+		if(this.locic == null) return;
+		
+		ResourceAndOrchestrationManager.LOGGER.info("LocicCommunicationThread started");
+		
 		try {
 			// create object streams (later UDP set/get implementation)
 			ObjectOutputStream	oos = new ObjectOutputStream(this.locic.getOutputStream());
@@ -54,15 +58,12 @@ public class LocicCommunicationThread extends Thread {
 				
 			}
 			
-			// wait for command 
-				// switch - case 
-					// start
-						// return IP
-					// stop
 		} catch(Exception error) {
 			ResourceAndOrchestrationManager.LOGGER.warning(error.getMessage());
 		}
 		
-	}
+		ResourceAndOrchestrationManager.LOGGER.info("LocicCommunicationThread closed");
+		
+	} // run method
 
 }
