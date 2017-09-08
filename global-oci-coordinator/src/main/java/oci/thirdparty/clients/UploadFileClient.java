@@ -65,7 +65,7 @@ public class UploadFileClient {
 			metaDataJsonString = g.toJson(metaDataObject);			
 		}
 
-		System.out.println("Name: " + metaDataObject.getName());
+		System.out.println("Name: " + metaDataObject.getServiceName());
 		System.out.println("FileName: " + metaDataObject.getFileName());
 		System.out.println("Price: " + metaDataObject.getPrice());
 		System.out.println("Location: " + metaDataObject.getLocation());
