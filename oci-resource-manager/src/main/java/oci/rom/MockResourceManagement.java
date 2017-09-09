@@ -18,13 +18,23 @@ public class MockResourceManagement implements GenericResourceManagement {
 	}
 
 	public boolean startEdgeService(String edgeServiceName) {
-		System.out.println("Edge Service " + edgeServiceName + " started");
-		return false;
+		boolean ret = false;
+		if(edgeServiceName != null) {
+			System.out.println("Edge Service " + edgeServiceName + " started");
+			ret = true;
+		}
+		else System.out.println("Edge Service name = null - nothing to start");
+		return ret;
 	}
 
 	public boolean stopEdgeService(String edgeServiceName) {
-		System.out.println("Edge Service " + edgeServiceName + " stopped");
-		return false;
+		boolean ret = false;
+		if(edgeServiceName != null) {
+			System.out.println("Edge Service " + edgeServiceName + " stopped");
+			ret = true;
+		}
+		else System.out.println("Edge Service name = null - nothing to stop");
+		return ret;
 	}
 
 	public InetAddress getEdgeServiceIP(String edgeServiceName) {
@@ -39,6 +49,7 @@ public class MockResourceManagement implements GenericResourceManagement {
 	}
 
 	public boolean resourcesAvailable() {
+		System.out.println("Resources available");
 		return true;
 	}
 
