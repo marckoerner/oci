@@ -41,7 +41,6 @@ public class LocicCommunicationThread extends Thread {
 				ResourceAndOrchestrationManager.LOGGER.info("Try to start edge service");
 				
 				if(resourceManager.resourcesAvailable()) {
-					ResourceAndOrchestrationManager.LOGGER.info("Resource are available");
 
 					if(resourceManager.startEdgeService(serviceName)) {
 						ResourceAndOrchestrationManager.LOGGER.info("Edge Service " + serviceName + " started");
