@@ -38,9 +38,18 @@ public class LocicCommunicationThread extends Thread {
 				
 				// wait on instructions from LOCIC
 				serviceName = (String) ois.readObject();
-				ResourceAndOrchestrationManager.LOGGER.info("Try to start edge service");
 				
+				if(serviceName == null) {
+					// LOCIC sends null before shutting down the communication
+					ResourceAndOrchestrationManager.LOGGER.info("LOCIC signaled end of communication");
+					oos.writeBoolean(false);
+					oos.flush();
+					break;
+				}
+				
+				ResourceAndOrchestrationManager.LOGGER.info("Verify availability of resources");
 				if(resourceManager.resourcesAvailable()) {
+					ResourceAndOrchestrationManager.LOGGER.info("Resources are available - try to start edge service");
 
 					if(resourceManager.startEdgeService(serviceName)) {
 						ResourceAndOrchestrationManager.LOGGER.info("Edge Service " + serviceName + " started");
@@ -55,7 +64,7 @@ public class LocicCommunicationThread extends Thread {
 					ResourceAndOrchestrationManager.LOGGER.info("No resource available");
 				}
 				
-			}
+			} // while loop
 			
 		} catch(Exception error) {
 			ResourceAndOrchestrationManager.LOGGER.warning(error.getMessage());

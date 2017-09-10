@@ -80,18 +80,18 @@ public class LocalOciCoordinator {
 			BufferedReader		stdIn		 		= new BufferedReader(inputStreamReader);					
 			String inputLine;
 			while ((inputLine = stdIn.readLine()) != null) {
-				// System.out.println(inputLine);
 				
 				// Exit
 				if(inputLine.equals("exit")) {
 					// shut down all serverSockets and wait until worker threads terminate (registration + resolver)
 					serviceRegistrationSocket.close(); // interrupts accept() method within thread implementation
 					serviceRegistrationWorker.join();
+					
 					serviceResolverSocket.close();
 					serviceResolverWorker.join();
-					// shut down resource manager communication
+					
+					resourceManagerWorker.interrupt();
 					resourceManagerSocket.close();
-					resourceManagerWorker.disconnect();
 					resourceManagerWorker.join();
 					break;
 				} //if exit

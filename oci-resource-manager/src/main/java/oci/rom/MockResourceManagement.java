@@ -7,7 +7,6 @@ import java.net.UnknownHostException;
  * Mock resource management implementation based on the regarding generic interface
  * @author Marc Koerner
  */
-
 public class MockResourceManagement implements GenericResourceManagement {
 	
 	private String resourceManagementName	= null;
