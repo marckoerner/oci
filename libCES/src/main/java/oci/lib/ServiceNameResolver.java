@@ -57,7 +57,7 @@ public class ServiceNameResolver {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-		}
+		} 
 		
 		return ip;
 		

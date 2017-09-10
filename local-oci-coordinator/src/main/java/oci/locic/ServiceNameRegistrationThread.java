@@ -123,6 +123,8 @@ public class ServiceNameRegistrationThread extends Thread {
 			
 		} // try - catch
 		
+		LocalOciCoordinator.LOGGER.info("Thread stopped");
+		
 	} // run	
 
 } // class ServiceNameRegistrationThread

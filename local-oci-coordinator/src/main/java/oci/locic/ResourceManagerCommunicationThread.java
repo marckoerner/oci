@@ -7,12 +7,20 @@ import java.net.Socket;
 
 import oci.lib.ServiceNameResolver;
 
+/**
+ * 
+ * This thread handles the communication to the resource and orchestration manager
+ * 
+ * @author Marc Koerner
+ *
+ */
 public class ResourceManagerCommunicationThread extends Thread {
 	
 	public final static int		PORT			= ServiceNameResolver.PORT + 2; // Port 5535
 	
 	private ServerSocket		serverSocket	= null;
 	private String 				serviceName		= new String();
+	private Object				lock			= new Object();
 	private boolean 			disconnect		= false;
 	private boolean				ret				= false;
 	
@@ -36,15 +44,15 @@ public class ResourceManagerCommunicationThread extends Thread {
 				ObjectOutputStream	oos = new ObjectOutputStream(resourceManager.getOutputStream());
 				ObjectInputStream	ois = new ObjectInputStream(resourceManager.getInputStream());
 				
-				synchronized(serviceName) {
+				synchronized(this.lock) {
 					while(!this.disconnect) {
 						try {
-							serviceName.wait();
+							this.lock.wait();
 						} catch(InterruptedException error) {
 							this.serviceName	= null;
 							this.disconnect		= true;
 						}
-						oos.writeObject(serviceName);
+						oos.writeObject(this.serviceName);
 						oos.flush();
 						this.ret = ois.readBoolean();
 					}
@@ -54,17 +62,18 @@ public class ResourceManagerCommunicationThread extends Thread {
 				oos.close();
 				ois.close();
 				resourceManager.close();
-				LocalOciCoordinator.LOGGER.info("Resource and Orchestration Manager connection closed");
+				LocalOciCoordinator.LOGGER.info("Connection closed");
 				
 			}
 		
 		} catch(Exception error) {
 			
 			LocalOciCoordinator.LOGGER.warning(error.getMessage());
+			error.printStackTrace();
 			
 		} // try - catch
 		
-		LocalOciCoordinator.LOGGER.info("Resource and Orchestration Manager connection Thread closed");
+		LocalOciCoordinator.LOGGER.info("Thread stopped");
 		
 	} // run
 	
@@ -72,19 +81,11 @@ public class ResourceManagerCommunicationThread extends Thread {
 	 * Sends a service request to the Resource and Orchestration Manager
 	 * @param serviceName Name of the service
 	 */
-	public synchronized void serviceRequest(String serviceName) {
-		//synchronized(this.serviceName) {
+	public void serviceRequest(String serviceName) {
+		synchronized(this.lock) {	
 			this.serviceName = serviceName;
-			this.serviceName.notifyAll();
-		//}
-	}
-	
-	/**
-	 * Interrupts this thread, closes the connection to the Resource and Orchestration Manager, and eventually terminates the thread.
-	 */
-	public void disconnect() {
-		this.disconnect = true;
-		this.interrupt();
+			this.lock.notifyAll();		
+		}
 	}
 
 }

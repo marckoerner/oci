@@ -42,7 +42,7 @@ public class ServiceNameResolverThread extends Thread {
 				// create object streams (later UDP set/get implementation)
 				ObjectOutputStream	oos = new ObjectOutputStream(serviceResolverClient.getOutputStream());
 				ObjectInputStream	ois = new ObjectInputStream(serviceResolverClient.getInputStream());
-							
+				
 				ServiceNameEntry serviceNameEntry = (ServiceNameEntry) ois.readObject();
 				if(serviceNameEntry == null) {
 					LocalOciCoordinator.LOGGER.warning("NULL pointer from read on socket");
@@ -84,6 +84,8 @@ public class ServiceNameResolverThread extends Thread {
 			LocalOciCoordinator.LOGGER.warning(error.getMessage());
 			
 		} // try - catch
+		
+		LocalOciCoordinator.LOGGER.info("Thread stopped");
 		
 	} // run
 	
