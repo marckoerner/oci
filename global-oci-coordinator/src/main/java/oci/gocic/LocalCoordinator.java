@@ -10,14 +10,27 @@ import java.net.InetAddress;
  *
  */
 public class LocalCoordinator {
-	String name;
+	int id;
     private InetAddress ip;
 
-	public LocalCoordinator(String name, InetAddress ip) {
-		this.name = name;
+	public LocalCoordinator(InetAddress ip) {
+		int idTemp = GlobalOciCoordinator.localCoordinators.size() + 1;
+		
+		// generate unique id
+		while (GlobalOciCoordinator.localCoordinators.get(idTemp)!= null)
+		{
+			idTemp++;
+		}
+
+		this.id = idTemp;
 		this.ip = ip;
 	}
+	
     
+	public int getId() {
+		return id;
+	}
+
 	/**
 	 * @return the ip
 	 */
