@@ -52,4 +52,9 @@ public class MockResourceManagement implements GenericResourceManagement {
 		return true;
 	}
 
+	public boolean isEdgeServiceRunning() {
+		System.out.println("Edge service not running");
+		return false;
+	}
+
 }

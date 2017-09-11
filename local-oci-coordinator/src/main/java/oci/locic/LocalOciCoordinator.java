@@ -90,7 +90,7 @@ public class LocalOciCoordinator {
 					serviceResolverSocket.close();
 					serviceResolverWorker.join();
 					
-					resourceManagerWorker.interrupt();
+					resourceManagerWorker.disconnect();
 					resourceManagerSocket.close();
 					resourceManagerWorker.join();
 					break;

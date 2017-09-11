@@ -1,5 +1,6 @@
 package oci.locic;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
@@ -43,18 +44,23 @@ public class ResourceManagerCommunicationThread extends Thread {
 				// create object streams RnOM communication
 				ObjectOutputStream	oos = new ObjectOutputStream(resourceManager.getOutputStream());
 				ObjectInputStream	ois = new ObjectInputStream(resourceManager.getInputStream());
-				
+								
 				synchronized(this.lock) {
 					while(!this.disconnect) {
 						try {
 							this.lock.wait();
 						} catch(InterruptedException error) {
 							this.serviceName	= null;
-							this.disconnect		= true;
+							//this.disconnect		= true;
 						}
-						oos.writeObject(this.serviceName);
-						oos.flush();
-						this.ret = ois.readBoolean();
+						try {
+							oos.writeObject(this.serviceName);
+							oos.flush();
+							this.ret = ois.readBoolean();
+						} catch(IOException error) {
+							LocalOciCoordinator.LOGGER.info("RnOM hung up");
+							break;
+						}
 					}
 				}
 								
@@ -62,7 +68,7 @@ public class ResourceManagerCommunicationThread extends Thread {
 				oos.close();
 				ois.close();
 				resourceManager.close();
-				LocalOciCoordinator.LOGGER.info("Connection closed");
+				LocalOciCoordinator.LOGGER.info("RnOM client connection closed");
 				
 			}
 		
@@ -86,6 +92,14 @@ public class ResourceManagerCommunicationThread extends Thread {
 			this.serviceName = serviceName;
 			this.lock.notifyAll();		
 		}
+	}
+	
+	/**
+	 * Closes the RnOM communication thread and interrupts all it's executions
+	 */
+	public void disconnect() {
+		this.disconnect = true;
+		this.interrupt();
 	}
 
 }

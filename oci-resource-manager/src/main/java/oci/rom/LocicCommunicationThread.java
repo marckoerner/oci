@@ -25,7 +25,7 @@ public class LocicCommunicationThread extends Thread {
 		String serviceName = null;
 		
 		if(this.locic == null) return;
-		
+				
 		ResourceAndOrchestrationManager.LOGGER.info("LocicCommunicationThread started");
 		
 		try {
