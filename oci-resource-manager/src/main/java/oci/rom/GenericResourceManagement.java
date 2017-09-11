@@ -35,6 +35,10 @@ public interface GenericResourceManagement {
 	 */
 	public InetAddress getEdgeServiceIP(String edgeServiceName); 
 	
-	// public boolean edgeServiceIsRunning();
+	/**
+	 * Determines the execution status of an edge service
+	 * @return true if service is running
+	 */
+	public boolean isEdgeServiceRunning();
 			
 } // interface
