@@ -7,7 +7,6 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
@@ -28,8 +27,9 @@ public class GlobalOciCoordinator {
 	 * @param args
 	 */
 
-	static ConcurrentHashMap<String, LocalCoordinator> localCoordinators = new ConcurrentHashMap<>();
-	static ConcurrentHashMap<String, Vector<String>> fileToLocalCoordinatorMap = new ConcurrentHashMap<>();
+//TODO	static Vector<Vector<Float>> networkTopology = new Vector<Vector<Float>>();
+	static ConcurrentHashMap<Integer, LocalCoordinator> localCoordinators = new ConcurrentHashMap<>();
+	static ConcurrentHashMap<String, List<LocalCoordinator>> fileToLocalCoordinatorMap = new ConcurrentHashMap<>();
 
 	public static final Logger LOGGER = Logger.getLogger(GlobalOciCoordinator.class.getName());
 
@@ -53,9 +53,13 @@ public class GlobalOciCoordinator {
 
 		// Example
 		// add some local coordinators      
-		addLocalCoordinator("LC1", InetAddress.getByName("127.0.0.1"));
-		addLocalCoordinator("LC2", InetAddress.getByName("127.0.0.2"));
-		addLocalCoordinator("LC3", InetAddress.getByName("127.0.0.3"));
+		addLocalCoordinator(InetAddress.getByName("127.0.0.1"));
+		addLocalCoordinator(InetAddress.getByName("127.0.0.2"));
+		addLocalCoordinator(InetAddress.getByName("127.0.0.3"));
+		
+		// add some network links between local coordinators
+//		addLink(lc1, lc2, metric);
+//		networkTopology[1][2]=5;
 
 		printAllLocalCoordinators();
 
@@ -78,7 +82,7 @@ public class GlobalOciCoordinator {
 	}
 
 	public static void printAllLocalCoordinators() {
-		for (ConcurrentHashMap.Entry<String, LocalCoordinator> entry : localCoordinators.entrySet()) {
+		for (ConcurrentHashMap.Entry<Integer, LocalCoordinator> entry : localCoordinators.entrySet()) {
 			String key = entry.getKey().toString();
 			String value = entry.getValue().getIp().toString();
 			System.out.println("key: " + key + " value: " + value);
@@ -87,30 +91,30 @@ public class GlobalOciCoordinator {
 	}
 
 	public static void printAllLocalCoordinatorFiles() {
-		for (ConcurrentHashMap.Entry<String, Vector<String>> entry : fileToLocalCoordinatorMap.entrySet()) {
+		for (ConcurrentHashMap.Entry<String, List<LocalCoordinator>> entry : fileToLocalCoordinatorMap.entrySet()) {
 			String key = entry.getKey().toString();
-			Vector<String> value = entry.getValue();
+			List<LocalCoordinator> value = entry.getValue();
 
-			Iterator<String> itr = value.iterator();
+			Iterator<LocalCoordinator> itr = value.iterator();
 			while(itr.hasNext())
 			{      
-				System.out.println("key: " + key + " value: " + itr.next());
+				System.out.println("key: " + key + " value: " + "LC " + itr.next().getId());
 			}     
 		}
 
 	}
 
-	public static LocalCoordinator getLocalCoordinator(String name) {
-		return localCoordinators.get(name);
+	public static LocalCoordinator getLocalCoordinator(int id) {
+		return localCoordinators.get(id);
 	}
 
-	public static LocalCoordinator addLocalCoordinator(String name, InetAddress ip) {
-		LocalCoordinator lc = new LocalCoordinator(name, ip);	
-		return localCoordinators.put(name, lc);
+	public static LocalCoordinator addLocalCoordinator(InetAddress ip) {
+		LocalCoordinator lc = new LocalCoordinator(ip);	
+		return localCoordinators.put(lc.getId(),lc);
 	}
 
-	public static LocalCoordinator removeLocalCoordinator(String name) {
-		return localCoordinators.remove(name);
+	public static LocalCoordinator removeLocalCoordinator(int id) {
+		return localCoordinators.remove(id);
 	}
 
 }

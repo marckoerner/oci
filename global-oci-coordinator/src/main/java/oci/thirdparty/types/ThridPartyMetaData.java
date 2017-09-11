@@ -1,7 +1,8 @@
 package oci.thirdparty.types;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 public class ThridPartyMetaData {
 
@@ -9,14 +10,14 @@ public class ThridPartyMetaData {
 	String serviceName;
 	String fileName;
 	double price;
-	Vector<String> location;	
+	List<Integer> location;	
 
 	public ThridPartyMetaData(String name, String fileName, double price) {
 		super();
 		this.serviceName = name;
 		this.fileName = fileName;
 		this.price = price;
-		this.location = new Vector<String>();
+		this.location = new ArrayList<Integer>();
 	}
 
 	/**
@@ -78,23 +79,16 @@ public class ThridPartyMetaData {
 	/**
 	 * @return the location
 	 */
-	public Vector<String> getLocation() {
+	public List<Integer> getLocation() {
 		return location;
 	}
 	
-	/**
-	 * @param location the location to set
-	 */
-	public void setLocation(Vector<String> location) {
-		this.location = location;
-	}
-
-	public void addLocation(String newLocation) {
-		this.location.addElement(newLocation);
+	public void addLocation(int newLocation) {
+		this.location.add(newLocation);
 	}
 
 	public void printLocation() {   	
-		Iterator<String> itr = location.iterator();
+		Iterator<Integer> itr = location.iterator();
 		while(itr.hasNext()){
 			System.out.println(itr.next());
 		}
