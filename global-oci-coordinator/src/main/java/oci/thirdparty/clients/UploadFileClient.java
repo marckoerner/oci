@@ -57,8 +57,8 @@ public class UploadFileClient {
 		else {
 			// generate ThridPartyMetaData Java object			
 			metaDataObject = new ThridPartyMetaData("Hamburger Service 3rd Party Edge Service", "hamburger.png", 8.50);
-			metaDataObject.addLocation("LC1");
-			metaDataObject.addLocation("LC3");			
+			metaDataObject.addLocation(1);
+			metaDataObject.addLocation(3);			
 
 			// convert meta data from a Java Object into a JSON string 
 			Gson g = new Gson();
