@@ -63,13 +63,11 @@ public class ResourceAndOrchestrationManager {
 					break;
 				} //if exit
 				
-				
 			} // while
 		
 		} catch(Exception error) {
 			LOGGER.warning(error.getMessage());
 		}
-		
 		
 		LOGGER.info("Resource and orchestration manager stopped");
 		
