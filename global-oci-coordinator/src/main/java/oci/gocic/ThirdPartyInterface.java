@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -89,26 +89,26 @@ public class ThirdPartyInterface {
 		return Response.status(200).entity(output).build();
 	}
 
-	// distribute to LCs as defined in metadata 
+	// distribute to LCs as defined in metadata
 	private void distributeToLocalCoordinators(String gcFilePath, ThridPartyMetaData metaDataObject) {
 		String s = null;
 		String fileName = metaDataObject.getFileName();
-		GlobalOciCoordinator.fileToLocalCoordinatorMap.put(fileName, new Vector<String>());
+		GlobalOciCoordinator.fileToLocalCoordinatorMap.put(fileName, new ArrayList<LocalCoordinator>());
 
-		Iterator<String> itr = metaDataObject.getLocation().iterator();
+		Iterator<Integer> itr = metaDataObject.getLocation().iterator();
 		while(itr.hasNext())
 		{
 			try {		
-				String lcName = itr.next();
+				int lcId = itr.next();
 				// run the copy command using the Runtime exec method				
 				// String command = "cmd.exe /C copy " + gcFilePath.toString() + " " + OCI_PATH + lcName;			
 				// String command = "sshpass -p \"oci-test\" scp " + gcFilePath.toString() + " " + "runge@" + GlobalOciCoordinator.getLocalCoordinator(lcName).getIp().getHostAddress() + ":" + OCI_PATH + lcName;
 				// String command = "cp " + gcFilePath.toString() + " " + OCI_PATH + lcName;
-				String command = "scp " + gcFilePath.toString() + " " + "runge@" + GlobalOciCoordinator.getLocalCoordinator(lcName).getIp().getHostAddress() + ":" + OCI_PATH + lcName;
+				String command = "scp " + gcFilePath.toString() + " " + "runge@" + GlobalOciCoordinator.getLocalCoordinator(lcId).getIp().getHostAddress() + ":" + OCI_PATH + "LC" + lcId;
 				Process p = Runtime.getRuntime().exec(command);
 
 				// add the transfered files in the GC state		
-				GlobalOciCoordinator.fileToLocalCoordinatorMap.get(fileName).add(lcName);
+				GlobalOciCoordinator.fileToLocalCoordinatorMap.get(fileName).add(GlobalOciCoordinator.localCoordinators.get(lcId));
 
 				BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 				BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
@@ -177,17 +177,17 @@ public class ThirdPartyInterface {
 		File file;
 	
 		// remove file from all corresponding LCs
-		Iterator<String> itr = GlobalOciCoordinator.fileToLocalCoordinatorMap.get(fileName).iterator();
+		Iterator<LocalCoordinator> itr = GlobalOciCoordinator.fileToLocalCoordinatorMap.get(fileName).iterator();
 		while(itr.hasNext())
 		{				
-			String lcName = itr.next();
-			file = new File(OCI_PATH + lcName + "/" + fileName);
+			LocalCoordinator lc = itr.next();
+			file = new File(OCI_PATH + "LC" + lc.getId() + "/" + fileName);
 			bool = file.delete();
 
 			if (bool)
-				GlobalOciCoordinator.LOGGER.info(lcName + ": " + fileName + " deleted.");		
+				GlobalOciCoordinator.LOGGER.info("LC " + lc.getId() + ": " + fileName + " deleted.");		
 			else
-				GlobalOciCoordinator.LOGGER.warning("Warning: " + lcName + ": " + fileName + " deleted.");
+				GlobalOciCoordinator.LOGGER.warning("Warning: " + "LC " +  lc.getId() + ": " + fileName + " deleted.");
 		}
 		
 		

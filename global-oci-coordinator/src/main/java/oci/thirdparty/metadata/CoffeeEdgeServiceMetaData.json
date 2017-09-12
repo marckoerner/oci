@@ -3,5 +3,5 @@
     "serviceName": "CoffeeEdgeService",
     "fileName": "coffee.png",
     "price": 2.50,
-    "location": ["LC2", "LC3"]
+    "location": ["2", "3"]
 }
