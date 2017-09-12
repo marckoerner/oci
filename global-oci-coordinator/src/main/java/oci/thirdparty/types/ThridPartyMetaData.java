@@ -10,14 +10,14 @@ public class ThridPartyMetaData {
 	String serviceName;
 	String fileName;
 	double price;
-	List<Integer> location;	
+	List<String> locations;
 
-	public ThridPartyMetaData(String name, String fileName, double price) {
+	public ThridPartyMetaData(String serviceName, String fileName, double price, List<String> locations) {
 		super();
-		this.serviceName = name;
+		this.serviceName = serviceName;
 		this.fileName = fileName;
 		this.price = price;
-		this.location = new ArrayList<Integer>();
+		this.locations = new ArrayList<String>(locations);
 	}
 
 	/**
@@ -79,16 +79,16 @@ public class ThridPartyMetaData {
 	/**
 	 * @return the location
 	 */
-	public List<Integer> getLocation() {
-		return location;
+	public List<String> getLocation() {
+		return locations;
 	}
 	
-	public void addLocation(int newLocation) {
-		this.location.add(newLocation);
+	public void addLocation(String newLocation) {
+		this.locations.add(newLocation);
 	}
 
 	public void printLocation() {   	
-		Iterator<Integer> itr = location.iterator();
+		Iterator<String> itr = locations.iterator();
 		while(itr.hasNext()){
 			System.out.println(itr.next());
 		}

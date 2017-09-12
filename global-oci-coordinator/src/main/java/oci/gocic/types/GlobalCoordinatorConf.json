@@ -1,0 +1,29 @@
+{
+	"localCoordinators": [
+		{
+			"id": 1,
+			"ip": "127.0.0.1",
+			"location": "DE"
+		},
+		{
+			"id": 2,
+			"ip": "127.0.0.2",
+			"location": "US"
+		},
+		{
+			"id": 3,
+			"ip": "127.0.0.2",
+			"location": "JP"
+		},
+		{
+			"id": 4,
+			"ip": "127.0.0.2",
+			"location": "FR"
+		},
+		{
+			"id": 5,
+			"ip": "127.0.0.3",
+			"location": "AU"
+		}
+	]
+}
