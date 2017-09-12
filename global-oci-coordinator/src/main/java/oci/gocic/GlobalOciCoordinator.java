@@ -44,28 +44,37 @@ public class GlobalOciCoordinator {
 		LOGGER.info("Logger Name: " + LOGGER.getName());
 		LOGGER.info("Global OCI Coordinator started");
 		
-		
 		// 1. Read Config File 
 		
+		if (args.length < 1)
+		{
+			LOGGER.info("ERROR: No Global Coordinator Config file specified. Example: gc.jar gc-conf.json");
+		}
+		
 		String globalCoordinatorConfigJsonFile = "";
-		globalCoordinatorConfigJsonFile = "./src/main/java/oci/gocic/types/GlobalCoordinatorConf.json";
+		globalCoordinatorConfigJsonFile = args[0];
 
 		String globalCoordinatorConfigJsonString;
 
 		if (!globalCoordinatorConfigJsonFile.isEmpty()) {
+			
 			// read config from a JSON file into a JSON string    
 			globalCoordinatorConfigJsonString = new String(Files.readAllBytes(Paths.get(globalCoordinatorConfigJsonFile)));
 
 			// convert JSON string into Java object with GSON lib	
 			Gson g = new Gson();
-			config = g.fromJson(globalCoordinatorConfigJsonString, GlobalCoordinatorConf.class);			
+			config = g.fromJson(globalCoordinatorConfigJsonString, GlobalCoordinatorConf.class);
+			
+			LOGGER.info("Global Coordinator Config file " + args[0] + " was successfully loaded.");
 		}
 		else {
 			// generate GlobalCoordinatorConf Java object			
-			config = new GlobalCoordinatorConf();
-			config.addLocalCoordinator(1, InetAddress.getByName("127.0.0.1"), "DE");
-			config.addLocalCoordinator(2, InetAddress.getByName("127.0.0.2"), "FR");
-			config.addLocalCoordinator(3, InetAddress.getByName("127.0.0.3"), "DE");				
+//			config = new GlobalCoordinatorConf();
+//			config.addLocalCoordinator(1, InetAddress.getByName("127.0.0.1"), "DE");
+//			config.addLocalCoordinator(2, InetAddress.getByName("127.0.0.2"), "FR");
+//			config.addLocalCoordinator(3, InetAddress.getByName("127.0.0.3"), "DE");	
+			
+			
 		}
 		
 		// 2. Setup GC
