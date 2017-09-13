@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -28,19 +30,14 @@ import oci.thirdparty.types.ThridPartyMetaData;
  *
  */
 
-// TODO integrate Update und Delete Client
 public class UploadFileClient {
 
 	public static void main(String[] args) throws IOException {
-
-		//final String OCI_PATH = "C:\\oci-test\\";
-		//final String OCI_THIRDPARTY_PATH = OCI_PATH + "ThirdParty\\";
 
 		final String OCI_PATH = "/home/runge/oci-test/";
 		final String OCI_THIRDPARTY_PATH = OCI_PATH + "ThirdParty/";
 
 		String metaDataJsonFile = "";
-		//metaDataJsonFile = "C:\\Users\\runge\\git\\oci\\global-oci-coordinator\\src\\main\\java\\oci\\thirdparty\\metadata\\CoffeeEdgeServiceMetaData.json";
 		metaDataJsonFile = "./src/main/java/oci/thirdparty/metadata/CoffeeEdgeServiceMetaData.json";
 
 		String metaDataJsonString;
@@ -55,10 +52,11 @@ public class UploadFileClient {
 			metaDataObject = g.fromJson(metaDataJsonString, ThridPartyMetaData.class);			
 		}
 		else {
-			// generate ThridPartyMetaData Java object			
-			metaDataObject = new ThridPartyMetaData("Hamburger Service 3rd Party Edge Service", "hamburger.png", 8.50);
-			metaDataObject.addLocation(1);
-			metaDataObject.addLocation(3);			
+			// generate ThridPartyMetaData Java object	
+			List<String> locations = new ArrayList<String>();
+			locations.add("DE");
+			locations.add("FR");
+			metaDataObject = new ThridPartyMetaData("Hamburger Service 3rd Party Edge Service", "hamburger.png", 8.50, locations);
 
 			// convert meta data from a Java Object into a JSON string 
 			Gson g = new Gson();
