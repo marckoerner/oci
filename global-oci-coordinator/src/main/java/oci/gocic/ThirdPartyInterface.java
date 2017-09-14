@@ -134,7 +134,6 @@ public class ThirdPartyInterface {
 					while ((s = stdError.readLine()) != null) {
 						System.out.println(s);
 					}
-
 				}
 				catch (IOException e) {
 					System.out.println("exception happened - here's what I know: ");
