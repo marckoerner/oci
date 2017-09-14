@@ -33,7 +33,7 @@ public class GlobalOciCoordinator {
 	 * @param args
 	 */
 
-//TODO	static Vector<Vector<Float>> networkTopology = new Vector<Vector<Float>>();
+	//TODO	static Vector<Vector<Float>> networkTopology = new Vector<Vector<Float>>();
 	static GlobalCoordinatorConf config;
 	static List<LocalCoordinator> localCoordinators = new ArrayList<>();
 	static ConcurrentHashMap<String, List<LocalCoordinator>> fileToLocalCoordinatorMap = new ConcurrentHashMap<>();
@@ -43,46 +43,37 @@ public class GlobalOciCoordinator {
 	public static void main(String[] args) throws Exception {
 		LOGGER.info("Logger Name: " + LOGGER.getName());
 		LOGGER.info("Global OCI Coordinator started");
-		
-		// 1. Read Config File 
-		
+
+		// 1. Read config file to setup GC
+
 		if (args.length < 1)
 		{
-			LOGGER.info("ERROR: No Global Coordinator Config file specified. Example: gc.jar gc-conf.json");
+			LOGGER.info("No Global Coordinator Config file specified. Example: gc.jar gc-conf.json. Default config is loaded.");
+
+			// generate GlobalCoordinatorConf Java object			
+			config = new GlobalCoordinatorConf();
+			config.addLocalCoordinator(1, InetAddress.getByName("127.0.0.1"), "DE");
+			config.addLocalCoordinator(2, InetAddress.getByName("127.0.0.2"), "FR");
+			config.addLocalCoordinator(3, InetAddress.getByName("127.0.0.3"), "DE");
 		}
-		
-		String globalCoordinatorConfigJsonFile = "";
-		globalCoordinatorConfigJsonFile = args[0];
+		else {			
+			String globalCoordinatorConfigJsonFile = args[0];		
 
-		String globalCoordinatorConfigJsonString;
-
-		if (!globalCoordinatorConfigJsonFile.isEmpty()) {
-			
 			// read config from a JSON file into a JSON string    
-			globalCoordinatorConfigJsonString = new String(Files.readAllBytes(Paths.get(globalCoordinatorConfigJsonFile)));
+			String globalCoordinatorConfigJsonString = new String(Files.readAllBytes(Paths.get(globalCoordinatorConfigJsonFile)));
 
 			// convert JSON string into Java object with GSON lib	
 			Gson g = new Gson();
 			config = g.fromJson(globalCoordinatorConfigJsonString, GlobalCoordinatorConf.class);
-			
+
 			LOGGER.info("Global Coordinator Config file " + args[0] + " was successfully loaded.");
 		}
-		else {
-			// generate GlobalCoordinatorConf Java object			
-//			config = new GlobalCoordinatorConf();
-//			config.addLocalCoordinator(1, InetAddress.getByName("127.0.0.1"), "DE");
-//			config.addLocalCoordinator(2, InetAddress.getByName("127.0.0.2"), "FR");
-//			config.addLocalCoordinator(3, InetAddress.getByName("127.0.0.3"), "DE");	
-			
-			
-		}
-		
-		// 2. Setup GC
-		
+
+		// setup GC		
 		localCoordinators = config.getLocalCoordinators();
-		
-		
-		// 3. Setup Jetty
+
+
+		// 2. Setup Jetty
 
 		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		//		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
@@ -99,8 +90,8 @@ public class GlobalOciCoordinator {
 		jerseyServlet.setInitParameter(ServerProperties.PROVIDER_CLASSNAMES, MultiPartFeature.class.getCanonicalName());
 
 		// TODO: add some network links between local coordinators
-//		addLink(lc1, lc2, metric);
-//		networkTopology[1][2]=5;
+		//		addLink(lc1, lc2, metric);
+		//		networkTopology[1][2]=5;
 
 		printLocalCoordinators();
 
@@ -119,7 +110,7 @@ public class GlobalOciCoordinator {
 	}
 
 	public static void printLocalCoordinators() {
-		
+
 		Iterator<LocalCoordinator> lcListItr = localCoordinators.iterator();
 		while (lcListItr.hasNext())
 		{
@@ -129,14 +120,14 @@ public class GlobalOciCoordinator {
 	}
 
 	public static List<LocalCoordinator> getLocalCoordinatorsByLocation(String location) {
-		
+
 		List<LocalCoordinator> lcList = new ArrayList<LocalCoordinator>();		
-		
+
 		Iterator<LocalCoordinator> lcListItr = localCoordinators.iterator();
 		while (lcListItr.hasNext())
 		{
 			LocalCoordinator currentLc = lcListItr.next();
-			
+
 			if (currentLc.getLocation().contains(location)) {
 				lcList.add(currentLc);
 			}
@@ -146,20 +137,20 @@ public class GlobalOciCoordinator {
 	}
 
 	public static LocalCoordinator getLocalCoordinator(int id) {
-		
+
 		Iterator<LocalCoordinator> lcListItr = localCoordinators.iterator();
 		while (lcListItr.hasNext())
 		{
 			LocalCoordinator currentLc = lcListItr.next();
-			
+
 			if (currentLc.getId() == id) {
 				return currentLc;
 			}
 		}		
-		
+
 		return null;
 	}
-	
+
 	public static void printLocalCoordinatorFiles() {
 		for (ConcurrentHashMap.Entry<String, List<LocalCoordinator>> entry : fileToLocalCoordinatorMap.entrySet()) {
 			String key = entry.getKey().toString();
