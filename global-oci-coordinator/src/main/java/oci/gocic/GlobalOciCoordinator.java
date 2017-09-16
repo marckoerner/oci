@@ -3,6 +3,7 @@
  */
 package oci.gocic;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -19,9 +20,14 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.servlet.ServletContainer;
 
+import com.google.common.base.Supplier;
 import com.google.gson.Gson;
 
+import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.UndirectedSparseGraph;
+import edu.uci.ics.jung.io.PajekNetReader;
 import oci.gocic.types.GlobalCoordinatorConf;
+import oci.gocic.types.LocalCoordinator;
 
 /**
  * @author Torsten Runge
@@ -37,6 +43,7 @@ public class GlobalOciCoordinator {
 	static GlobalCoordinatorConf config;
 	static List<LocalCoordinator> localCoordinators = new ArrayList<>();
 	static ConcurrentHashMap<String, List<LocalCoordinator>> fileToLocalCoordinatorMap = new ConcurrentHashMap<>();
+	public static int linkCount;
 
 	public static final Logger LOGGER = Logger.getLogger(GlobalOciCoordinator.class.getName());
 
@@ -46,7 +53,7 @@ public class GlobalOciCoordinator {
 
 		// 1. Read config file to setup GC
 
-		if (args.length < 1)
+		if (args.length < 2)
 		{
 			LOGGER.info("No Global Coordinator Config file specified. Example: gc.jar gc-conf.json. Default config is loaded.");
 
@@ -56,7 +63,7 @@ public class GlobalOciCoordinator {
 			config.addLocalCoordinator(2, InetAddress.getByName("127.0.0.2"), "FR");
 			config.addLocalCoordinator(3, InetAddress.getByName("127.0.0.3"), "DE");
 		}
-		else {			
+		else {
 			String globalCoordinatorConfigJsonFile = args[0];		
 
 			// read config from a JSON file into a JSON string    
@@ -72,8 +79,15 @@ public class GlobalOciCoordinator {
 		// setup GC		
 		localCoordinators = config.getLocalCoordinators();
 
-
-		// 2. Setup Jetty
+		
+		// 2. Read Network Topology from config file
+		
+		@SuppressWarnings({ "rawtypes" })
+		Graph g = getGraph(args[1]);
+		System.out.println("The graph g = " + g.toString());
+		
+		
+		// 3. Setup Jetty
 
 		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		//		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
@@ -162,9 +176,23 @@ public class GlobalOciCoordinator {
 				System.out.println("key: " + key + " value: " + "LC " + itr.next().getId());
 			}     
 		}
-
 	}
+	
+	/**
+	 * Generates a graph: in this case, reads it from the file "simple.net"
+	 * @return A sample undirected graph
+	 * @throws IOException if there is an error in reading the file
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static Graph getGraph(String networkTopologyFile) throws IOException 
+	{
+		PajekNetReader pnr = new PajekNetReader(new Supplier(){
+			public Object get() {
+				return new Object();
+			}});
+		Graph g = new UndirectedSparseGraph();
 
-
-
+		pnr.load(networkTopologyFile, g);
+		return g;
+	}
 }

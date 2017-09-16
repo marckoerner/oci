@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import oci.gocic.LocalCoordinator;
-
 public class GlobalCoordinatorConf {
 
 	List<LocalCoordinator> localCoordinators = new ArrayList<>();
