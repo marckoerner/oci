@@ -28,6 +28,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import com.google.gson.Gson;
 
+import oci.gocic.types.LocalCoordinator;
 import oci.thirdparty.types.ThridPartyMetaData;
 
 @Path("/files")
