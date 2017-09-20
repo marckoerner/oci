@@ -1,7 +1,7 @@
 /**
  * 
  */
-package oci.gocic;
+package oci.gocic.types;
 
 import java.net.InetAddress;
 
@@ -54,4 +54,9 @@ public class LocalCoordinator {
 	public void setIp(InetAddress ip) {
 		this.ip = ip;
 	}
+	
+	// JUNG2 makes good use of it for labeling in visualization
+	public String toString() {
+        return ""+id;
+    }        
 }

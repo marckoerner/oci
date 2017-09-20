@@ -28,6 +28,7 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import com.google.gson.Gson;
 
+import oci.gocic.types.LocalCoordinator;
 import oci.thirdparty.types.ThridPartyMetaData;
 
 @Path("/files")
@@ -134,7 +135,6 @@ public class ThirdPartyInterface {
 					while ((s = stdError.readLine()) != null) {
 						System.out.println(s);
 					}
-
 				}
 				catch (IOException e) {
 					System.out.println("exception happened - here's what I know: ");
