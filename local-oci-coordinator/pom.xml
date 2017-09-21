@@ -17,7 +17,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>oci.mock.client.EchoClient</mainClass>
+              <mainClass>oci.locic.LocalOciCoordinator</mainClass>
             </manifest>
           </archive>
         </configuration>

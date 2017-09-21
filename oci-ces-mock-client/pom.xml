@@ -18,7 +18,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>oci.locic.LocalOciCoordinator</mainClass>
+              <mainClass>oci.mock.client.EchoClient</mainClass>
               <!--  <addClasspath>true</addClasspath>  -->
               <!--  <classpathPrefix>../lib/</classpathPrefix>   -->
             </manifest>
