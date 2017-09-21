@@ -10,16 +10,14 @@
   		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
   </dependencies>
-   <build>
+  <build>
     <plugins>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
           <archive>
             <manifest>
-              <mainClass>oci.locic.LocalOciCoordinator</mainClass>
-              <!--  <addClasspath>true</addClasspath>  -->
-              <!--  <classpathPrefix>../lib/</classpathPrefix>   -->
+              <mainClass>oci.mock.client.EchoClient</mainClass>
             </manifest>
           </archive>
         </configuration>
