@@ -9,6 +9,9 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.util.Vector;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import oci.lib.ServiceNameEntry;
@@ -36,10 +39,14 @@ public class LocalOciCoordinator {
 	 */
 	public static void main(String[] args) {
 		
-		LOGGER.info("Local OCI Coordinator started");
+		// set logging output to console
+		Handler handlerObj = new ConsoleHandler();
+		handlerObj.setLevel(Level.ALL);
+		LOGGER.addHandler(handlerObj);
+		LOGGER.setLevel(Level.ALL);
+		LOGGER.setUseParentHandlers(false);
 		
-		// create vector with discovery service name to IP entries
-	    // Vector<ServiceNameEntry> serviceList = new Vector<ServiceNameEntry>();
+		LOGGER.info("Local OCI Coordinator started");
 		
 		// add mock echo edge service to service list
 		ServiceNameEntry echoService = null;
