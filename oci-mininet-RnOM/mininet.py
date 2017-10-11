@@ -54,6 +54,7 @@ def string_to_function(argument):
     return func
     
 # main
+print "#######################################"
 print "### Mininet Resource Manager Daemon ###"
 print "#######################################"
 
