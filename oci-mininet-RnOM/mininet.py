@@ -31,7 +31,7 @@ def isRunning(name):
     return True
 
 def getAddress(name):
-    print "service %s has IP x.y.z"
+    print "service %s has IP x.y.z" % name
     return "192.168.x.y"
 
 def disconnect(name):
@@ -47,7 +47,8 @@ def string_to_function(argument):
         "start": startService,
         "stop": stopService,
         "isRunning": isRunning,
-        "disconnect": disconnect
+        "disconnect": disconnect,
+        "getAddress": getAddress
     }
     func = switcher.get(argument, error)
     return func
