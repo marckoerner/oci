@@ -18,28 +18,45 @@ import sys
 #net.build()
 #CLI(net)  
 
-def startService(name):
+def startService(name, socket):
     print "start service", name
+    out = 'service %s started\n' % name
+    socket.sendall(out)
+    print out
     return True
 
-def stopService(name):
+def stopService(name, socket):
     print "stop service", name
+    out = 'service %s stopped\n' % name
+    socket.sendall(out)
+    print out
     return True
 
-def isRunning(name):
+def isRunning(name, socket):
     print "is service %s running" % name
+    out = 'service %s is running\n' % name
+    socket.sendall(out)
+    print out
     return True
 
-def getAddress(name):
+def getAddress(name, socket):
     print "service %s has IP x.y.z" % name
+    out = '%s service has IP x.y.z\n' % name
+    socket.sendall(out)
+    print out
     return "192.168.x.y"
 
-def disconnect(name):
+def disconnect(name, socket):
     print "disconnect"
+    out = 'disconnected\n'
+    socket.sendall(out)
+    print out
     return True
 
-def error(name):
+def error(name, socket):
     print "No command found!"
+    out = 'command not found\n'
+    socket.sendall(out)
     return False
 
 def string_to_function(argument):
@@ -85,32 +102,16 @@ while True:
                 if length == 2:
                     
                     func = string_to_function(command[0])
-                    func(command[1])
+                    func(command[1], connection)
 
                 elif length == 1:
 
                     func = string_to_function(command[0])
-                    func("")
+                    func("", connection)
 
                 else:
-                    error("error")
+                    error("error", connection)
 
-                #print 'command: ', command 
-                #print 'command[0]: "%s"' % command[0]
-                #print 'command[1]: "%s"' % command[1]
-
-                #func = string_to_function(command[0])
-                #func(command[1])
-                #if data == "start\n":
-                #    print "startService"
-                #elif data == "stop\n":
-                #    print "stopService"
-                #else:
-                #    print "ELSE"
-
-                print 'sending data and command back to the client'
-                connection.sendall(data)
-                
             else:
                 print 'no more data from', client_address
                 break
