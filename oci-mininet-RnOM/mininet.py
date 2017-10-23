@@ -1,23 +1,13 @@
 #!/usr/bin/python
 
-#from mininet.net import Mininet
-#from mininet.cli import CLI
+# imports
+from mininet.net import Mininet
+from mininet.cli import CLI
 
 import socket
 import sys
 
-#net = Mininet()
-#h1 = net.addHost('h1')
-
-#h2 = net.addHost('h2')
-#s1 = net.addSwitch('s1')
-
-#net.addLink(s1,h1)
-#net.addLink(s1,h2)
-
-#net.build()
-#CLI(net)  
-
+# method definitions
 def startService(name, socket):
     print "start service", name
     out = 'service %s started\n' % name
@@ -82,6 +72,20 @@ server_address = ('', port)
 sock.bind(server_address)
 sock.listen(1)
 
+# build initial mininet topology
+net = Mininet()
+
+h1 = net.addHost('h1')
+h2 = net.addHost('h2')
+s1 = net.addSwitch('s1')
+
+net.addLink(s1,h1)
+net.addLink(s1,h2)
+
+net.build()
+CLI(net)  
+
+# main programm loop / wait for instructions from OCI RnOM
 while True:
     # Wait for a connection
     print "waiting for a connection on port ", port
