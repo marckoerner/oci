@@ -1,4 +1,3 @@
-#!/usr/bin/python
 
 # imports
 from mininet.net import Mininet
@@ -8,8 +7,11 @@ import socket
 import sys
 
 # method definitions
-def startService(name, socket):
+def startService(name, socket, m_net, switch):
     print "start service", name
+    host = m_net.addHost(name)
+    net.addLink(switch,host)
+    #switch.attach()
     out = 'service %s started\n' % name
     socket.sendall(out)
     print out
@@ -74,16 +76,20 @@ sock.listen(1)
 
 # build initial mininet topology
 net = Mininet()
-
+c0 = net.addController(name='c0',
+#                     controller=Controller,
+                     port=6633)
 h1 = net.addHost('h1')
 h2 = net.addHost('h2')
 s1 = net.addSwitch('s1')
-
 net.addLink(s1,h1)
 net.addLink(s1,h2)
-
-net.build()
-CLI(net)  
+for controller in net.controllers:
+    controller.start()
+net.get('s1').start([c0])
+#net.build()
+net.start()
+CLI(net)
 
 # main programm loop / wait for instructions from OCI RnOM
 while True:
