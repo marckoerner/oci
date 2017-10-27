@@ -11,7 +11,23 @@ def startService(name, socket, m_net, switch):
     print "start service", name
     host = m_net.addHost(name)
     net.addLink(switch,host)
-    #switch.attach()
+
+    interfaces = switch.intfs
+    #print "Interfaces: ", interfaces
+    #print "len: ", len(interfaces)
+
+    if_nr, if_name = interfaces.items()[len(interfaces)-1]
+    #print "interface name: ", if_name
+    
+    switch.attach(if_name)
+    host.configDefault(defaultRoute = host.defaultIntf())
+
+    print host.cmd('ifconfig')
+
+    # Test network function
+    h1 = net.getNodeByName('h1')
+    print host.cmd( 'ping -c4 ', h1.IP() )
+
     out = 'service %s started\n' % name
     socket.sendall(out)
     print out
@@ -89,7 +105,7 @@ for controller in net.controllers:
 net.get('s1').start([c0])
 #net.build()
 net.start()
-CLI(net)
+#CLI(net)
 
 # main programm loop / wait for instructions from OCI RnOM
 while True:
@@ -112,7 +128,7 @@ while True:
                 if length == 2:
                     
                     func = string_to_function(command[0])
-                    func(command[1], connection)
+                    func(command[1], connection, net, s1)
 
                 elif length == 1:
 
@@ -129,4 +145,5 @@ while True:
     finally:
         # Clean up the connection
         connection.close()
+	net.stop()
 
