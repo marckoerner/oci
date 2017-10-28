@@ -22,6 +22,8 @@ def startService(name, socket, m_net, switch):
     switch.attach(if_name)
     host.configDefault(defaultRoute = host.defaultIntf())
 
+    print "net: ", net
+    print "m_net", m_net
     print host.cmd('ifconfig')
 
     # Test network function
@@ -33,8 +35,10 @@ def startService(name, socket, m_net, switch):
     print out
     return True
 
-def stopService(name, socket):
+def stopService(name, socket, m_net, switch):
     print "stop service", name
+
+
     out = 'service %s stopped\n' % name
     socket.sendall(out)
     print out
@@ -47,12 +51,16 @@ def isRunning(name, socket):
     print out
     return True
 
-def getAddress(name, socket):
-    print "service %s has IP x.y.z" % name
-    out = '%s service has IP x.y.z\n' % name
+def getAddress(name, socket, m_net, switch):
+    # this method blocks if no host with name exists
+    host = net.get(name)
+    #print "host: ", host
+    host_ip = host.IP()
+    #print "host.IP: ", host_ip
+    out = name + ' service has IP: ' + host_ip + '\n'
     socket.sendall(out)
     print out
-    return "192.168.x.y"
+    return host_ip
 
 def disconnect(name, socket):
     print "disconnect"
