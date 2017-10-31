@@ -22,6 +22,7 @@ def startService(name, socket, m_net, switch):
     switch.attach(if_name)
     host.configDefault(defaultRoute = host.defaultIntf())
 
+    # print network configuration information
     print "net: ", net
     print "m_net", m_net
     print host.cmd('ifconfig')
@@ -29,6 +30,9 @@ def startService(name, socket, m_net, switch):
     # Test network function
     h1 = net.getNodeByName('h1')
     print host.cmd( 'ping -c4 ', h1.IP() )
+
+    # start ssh server
+    host.cmd('/usr/sbin/sshd -D &')
 
     out = 'service %s started\n' % name
     socket.sendall(out)
@@ -38,15 +42,22 @@ def startService(name, socket, m_net, switch):
 def stopService(name, socket, m_net, switch):
     print "stop service", name
 
+    host = m_net.get(name)
+    print "get host: ", host
+    m_net.delHost(host)
+    print "host deleted"
 
     out = 'service %s stopped\n' % name
     socket.sendall(out)
     print out
     return True
 
-def isRunning(name, socket):
+def isRunning(name, socket, m_net, switch):
     print "is service %s running" % name
     out = 'service %s is running\n' % name
+
+    # if host with name NAME exist?
+
     socket.sendall(out)
     print out
     return True
