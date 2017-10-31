@@ -10,14 +10,22 @@ import sys
 def startService(name, socket, m_net, switch):
     print "start service", name
     host = m_net.addHost(name)
-    net.addLink(switch,host)
+    print "host: ", host
+    print "switch: ", switch
+
+    print "net: ", net
+    print "m_net: ", m_net
+
+    net.addLink(switch, host)
+
+    print "debug"
 
     interfaces = switch.intfs
-    #print "Interfaces: ", interfaces
-    #print "len: ", len(interfaces)
+    print "Interfaces: ", interfaces
+    print "len: ", len(interfaces)
 
     if_nr, if_name = interfaces.items()[len(interfaces)-1]
-    #print "interface name: ", if_name
+    print "interface name: ", if_name
     
     switch.attach(if_name)
     host.configDefault(defaultRoute = host.defaultIntf())
@@ -122,6 +130,13 @@ net.addLink(s1,h2)
 for controller in net.controllers:
     controller.start()
 net.get('s1').start([c0])
+
+# Create a node in root namespace and link to switch s1
+#ip = '10.100.100.1/32'
+#root = Node('root', inNamespace=False)
+#intf = network.addLink(root, s1).intf1
+#root.setIP(ip, intf=intf)
+
 #net.build()
 net.start()
 #CLI(net)
