@@ -32,7 +32,10 @@ def startService(name, socket, m_net, switch):
     #print h1.cmd('ping -c4 ', host.IP())
 
     # start ssh server
-    #host.cmd('/usr/sbin/sshd -D &')
+    host.cmd('/usr/sbin/sshd -D &')
+
+    # start java edge service
+    #host.cmd('java -jar ./%s' %name)
 
     out = 'service %s started\n' % name
     socket.sendall(out)
@@ -182,6 +185,12 @@ try:
 	    print "connection closed"
 
 finally:
+    # terminate sshd processes
+    print "kill all sshd"
+    cmd = '/usr/sbin/sshd'
+    for host in net.hosts:
+        host.cmd( 'kill %' + cmd )
+
     print "close mn network"
     root.stop()
     net.stop()
