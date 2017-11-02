@@ -3,6 +3,9 @@
 from mininet.net import Mininet
 from mininet.cli import CLI
 
+from mininet.node import Node, OVSBridge
+
+
 import socket
 import sys
 
@@ -10,37 +13,26 @@ import sys
 def startService(name, socket, m_net, switch):
     print "start service", name
     host = m_net.addHost(name)
-    print "host: ", host
-    print "switch: ", switch
 
-    print "net: ", net
-    print "m_net: ", m_net
-
-    net.addLink(switch, host)
-
-    print "debug"
-
-    interfaces = switch.intfs
-    print "Interfaces: ", interfaces
-    print "len: ", len(interfaces)
-
-    if_nr, if_name = interfaces.items()[len(interfaces)-1]
-    print "interface name: ", if_name
+    m_net.addLink(switch, host)
     
+    # attach added interface
+    interfaces = switch.intfs
+    if_nr, if_name = interfaces.items()[len(interfaces)-1]
     switch.attach(if_name)
+
     host.configDefault(defaultRoute = host.defaultIntf())
 
     # print network configuration information
-    print "net: ", net
-    print "m_net", m_net
     print host.cmd('ifconfig')
 
-    # Test network function
+    # test network function
     h1 = net.getNodeByName('h1')
     print host.cmd( 'ping -c4 ', h1.IP() )
+    #print h1.cmd('ping -c4 ', host.IP())
 
     # start ssh server
-    host.cmd('/usr/sbin/sshd -D &')
+    #host.cmd('/usr/sbin/sshd -D &')
 
     out = 'service %s started\n' % name
     socket.sendall(out)
@@ -51,7 +43,7 @@ def stopService(name, socket, m_net, switch):
     print "stop service", name
 
     host = m_net.get(name)
-    print "get host: ", host
+    #print "get host: ", host
     m_net.delHost(host)
     print "host deleted"
 
@@ -119,65 +111,79 @@ sock.listen(1)
 
 # build initial mininet topology
 net = Mininet()
-c0 = net.addController(name='c0',
+#c0 = net.addController(name='c0',
 #                     controller=Controller,
-                     port=6633)
+#                     port=6633)
 h1 = net.addHost('h1')
 h2 = net.addHost('h2')
-s1 = net.addSwitch('s1')
+s1 = net.addSwitch('s1', cls=OVSBridge)
 net.addLink(s1,h1)
 net.addLink(s1,h2)
-for controller in net.controllers:
-    controller.start()
-net.get('s1').start([c0])
+#for controller in net.controllers:
+#    controller.start()
+#net.get('s1').start([c0])
 
-# Create a node in root namespace and link to switch s1
-#ip = '10.100.100.1/32'
-#root = Node('root', inNamespace=False)
-#intf = network.addLink(root, s1).intf1
-#root.setIP(ip, intf=intf)
+# Create a gateway node in root namespace
+ip = '10.100.100.1/8'
+root = Node('root', inNamespace=False)
+intf = net.addLink(root, s1).intf1
+root.setIP(ip, intf=intf)
+#print 'ip route add net 10.0.0.0/8 via 10.100.100.1 dev', str(intf)
+#root.cmd('ip route add net 10.0.0.0/8 via 10.100.100.1 dev' + str(intf))
 
 #net.build()
 net.start()
 #CLI(net)
+#net.stop()
 
 # main programm loop / wait for instructions from OCI RnOM
-while True:
-    # Wait for a connection
-    print "waiting for a connection on port ", port
-    connection, client_address = sock.accept()
+try:
+    while True:
 
-    try:
-        print 'connection from', client_address
+        # Wait for a connection
+        print "waiting for a connection on port ", port
+        connection, client_address = sock.accept()
 
-        # Receive the data in small chunks and retransmit it
-        while True:
-            data = connection.recv(32)
-            print 'received command "%s"' % data
-            if data:
-                command = data.split( )
-                length = len(command)
+        try:
+            print 'connection from', client_address
+
+            # Receive the data in small chunks and retransmit it
+            while True:
+                data = connection.recv(32)
+                print 'received command "%s"' % data
+                if data:
+                    command = data.split( )
+                    length = len(command)
                 #func = string_to_command()
 
-                if length == 2:
+                    if length == 2:
                     
-                    func = string_to_function(command[0])
-                    func(command[1], connection, net, s1)
+                        func = string_to_function(command[0])
+                        func(command[1], connection, net, s1)
 
-                elif length == 1:
+                    elif length == 1:
 
-                    func = string_to_function(command[0])
-                    func("", connection)
+                        func = string_to_function(command[0])
+                        func("", connection)
+
+                    else:
+                        error("error", connection)
 
                 else:
-                    error("error", connection)
-
-            else:
-                print 'no more data from', client_address
-                break
+                    print 'no more data from', client_address
+                    break
             
-    finally:
-        # Clean up the connection
-        connection.close()
-	net.stop()
+        finally:
+            # Clean up the connection
+	    #print "finally"
+            connection.close()
+	    #root.stop()
+	    #net.stop()
+	    print "connection closed"
+
+finally:
+    print "close mn network"
+    root.stop()
+    net.stop()
+    print "EXIT"
 
