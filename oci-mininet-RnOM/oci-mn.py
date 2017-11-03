@@ -18,15 +18,15 @@ def startService(name, socket, m_net, switch):
     interfaces = switch.intfs
     if_nr, if_name = interfaces.items()[len(interfaces)-1]
     switch.attach(if_name)
-
+    print "if_name: ", if_name
     host.configDefault(defaultRoute = host.defaultIntf())
 
     # print network configuration information
     print host.cmd('ifconfig')
 
     # test network function
-    h1 = net.getNodeByName('h1')
-    print host.cmd( 'ping -c4 ', h1.IP() )
+    #h1 = m_net.getNodeByName('h1')
+    #print host.cmd( 'ping -c4 ', h1.IP() )
     #print h1.cmd('ping -c4 ', host.IP())
 
     # start ssh server
@@ -46,6 +46,7 @@ def stopService(name, socket, m_net, switch):
     host = m_net.get(name)
     #print "get host: ", host
 
+    #switch.detach()
     # kill java 
     # host.cmd('kill')
 
@@ -53,7 +54,10 @@ def stopService(name, socket, m_net, switch):
     cmd = '/usr/sbin/sshd'
     host.cmd( 'kill %' + cmd )
 
+    # delete links and host
+    m_net.delLinkBetween(switch, host)
     m_net.delHost(host)
+    host.stop()
     print "host deleted"
 
     out = 'service %s stopped\n' % name
@@ -142,6 +146,8 @@ for n in xrange(1, number+1):
     print "add client host ", tmp_name
     tmp_host = net.addHost(tmp_name)
     net.addLink(s1,tmp_host)
+    # start sshd on all hosts
+    tmp_host.cmd('/usr/sbin/sshd -D &')
 
 #net.addLink(s1,h1)
 #net.addLink(s1,h2)
@@ -212,7 +218,7 @@ finally:
         host.cmd( 'kill %' + cmd )
 
     print "close mn network"
-    root.stop()
+    #root.stop()
     net.stop()
     print "EXIT"
 
