@@ -2,9 +2,7 @@
 # imports
 from mininet.net import Mininet
 from mininet.cli import CLI
-
 from mininet.node import Node, OVSBridge
-
 
 import socket
 import sys
@@ -47,6 +45,14 @@ def stopService(name, socket, m_net, switch):
 
     host = m_net.get(name)
     #print "get host: ", host
+
+    # kill java 
+    # host.cmd('kill')
+
+    # kill sshd 
+    cmd = '/usr/sbin/sshd'
+    host.cmd( 'kill %' + cmd )
+
     m_net.delHost(host)
     print "host deleted"
 
@@ -105,6 +111,18 @@ print "#######################################"
 print "### Mininet Resource Manager Daemon ###"
 print "#######################################"
 
+# get cmd arguments
+if len(sys.argv) != 2:
+    print ""
+    print "Usage: python oci-mn.py [NUMBER]"
+    print "Starts the oci mininet resource manager daemon and mininet network "
+    print "with an OVSBridge star topology and NUMBER client hosts."
+    print ""
+    exit()
+
+item_2 = sys.argv[1]
+number = int(item_2)
+
 # set up daemon connection
 port = 8383
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -114,17 +132,19 @@ sock.listen(1)
 
 # build initial mininet topology
 net = Mininet()
-#c0 = net.addController(name='c0',
-#                     controller=Controller,
-#                     port=6633)
-h1 = net.addHost('h1')
-h2 = net.addHost('h2')
+#h1 = net.addHost('h1')
+#h2 = net.addHost('h2')
+
 s1 = net.addSwitch('s1', cls=OVSBridge)
-net.addLink(s1,h1)
-net.addLink(s1,h2)
-#for controller in net.controllers:
-#    controller.start()
-#net.get('s1').start([c0])
+
+for n in xrange(1, number+1):
+    tmp_name = 'h' + str(n)
+    print "add client host ", tmp_name
+    tmp_host = net.addHost(tmp_name)
+    net.addLink(s1,tmp_host)
+
+#net.addLink(s1,h1)
+#net.addLink(s1,h2)
 
 # Create a gateway node in root namespace
 ip = '10.100.100.1/8'
