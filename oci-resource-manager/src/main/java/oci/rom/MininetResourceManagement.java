@@ -80,8 +80,22 @@ public class MininetResourceManagement implements GenericResourceManagement {
 	}
 
 	public InetAddress getEdgeServiceIP(String edgeServiceName) {
-		// TODO Auto-generated method stub
-		return null;
+		InetAddress ret = null;
+		try {
+			this.out.print("getAddress" + edgeServiceName);
+			this.out.flush();
+			String reply = this.in.readLine();
+			
+			String[] words = reply.split("\\s+");
+			if(edgeServiceName.equals(words[0]) && words.length == 5) {
+				String ip = words[4];
+				ret = InetAddress.getByName(ip);
+			}			
+		} catch(Exception error) {
+			ResourceAndOrchestrationManager.LOGGER.warning("error while trying to get edge service IP address with mininet RnOM");
+			ret = null;
+		}
+		return ret;
 	}
 
 	public boolean isEdgeServiceRunning() {
