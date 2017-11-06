@@ -25,7 +25,7 @@ public class EchoClient {
     private static final Logger LOGGER = Logger.getLogger(EchoClient.class.getName());
 	
 	// OCI service name
-	public final static String	SERVICE_NAME	= "EchoEdgeService";
+	public final static String	SERVICE_NAME	= "Echo";
 	public final static int		SERVICE_PORT	= 9292;
 	
     private static final int	SOCKET_TIMEOUT	= 5000; // 5 seconds timeout
