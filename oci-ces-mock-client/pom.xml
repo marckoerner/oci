@@ -3,6 +3,10 @@
   <groupId>oci.mock.client</groupId>
   <artifactId>oci-ces-mock-client</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <properties>
+    <maven.compiler.source>1.6</maven.compiler.source>
+    <maven.compiler.target>1.6</maven.compiler.target>
+  </properties>
   <dependencies>
   	<dependency>
   		<groupId>oci.lib</groupId>
@@ -14,16 +18,27 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.1.0</version>
         <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
           <archive>
             <manifest>
               <mainClass>oci.mock.client.EchoClient</mainClass>
-              <!--  <addClasspath>true</addClasspath>  -->
-              <!--  <classpathPrefix>../lib/</classpathPrefix>   -->
             </manifest>
           </archive>
         </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
