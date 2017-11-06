@@ -25,7 +25,7 @@ public class EchoEdgeService extends EdgeDiscoveryService {
     private static final Logger LOGGER = Logger.getLogger(EchoEdgeService.class.getName());
 	
 	// OCI service name
-	public final static String	SERVICE_NAME	= "EchoEdgeService";
+	public final static String	SERVICE_NAME	= "Echo";
 	public final static int		SERVICE_PORT	= 9292;
 	
 		
