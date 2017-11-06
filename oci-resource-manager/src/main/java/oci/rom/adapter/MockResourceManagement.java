@@ -1,7 +1,9 @@
-package oci.rom;
+package oci.rom.adapter;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+
+import oci.rom.GenericResourceManagement;
 
 /**
  * Mock resource management implementation based on the regarding generic interface

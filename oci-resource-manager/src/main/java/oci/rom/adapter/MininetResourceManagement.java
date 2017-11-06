@@ -1,13 +1,16 @@
 /**
  * 
  */
-package oci.rom;
+package oci.rom.adapter;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+
+import oci.rom.GenericResourceManagement;
+import oci.rom.ResourceAndOrchestrationManager;
 
 /**
  * This is an implementation of the GenericResourceManagement for the Mininet OCI-RnOM
