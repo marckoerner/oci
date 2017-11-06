@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import oci.locic.ResourceManagerCommunicationThread;
+import oci.rom.adapter.MockResourceManagement;
 
 /**
  * The Manager class implements the resource and orchestration manager. It 
@@ -26,7 +27,7 @@ import oci.locic.ResourceManagerCommunicationThread;
  */
 public class ResourceAndOrchestrationManager {
 	
-    		final static Logger			LOGGER			= Logger.getLogger(ResourceAndOrchestrationManager.class.getName());
+    public	final static Logger			LOGGER			= Logger.getLogger(ResourceAndOrchestrationManager.class.getName());
     public	final static byte[]			LOCIC_IP		= {(byte) 127, (byte) 0, (byte) 0, (byte) 1}; 	// LOCIC IP
     public	final static int			LOCIC_PORT		= ResourceManagerCommunicationThread.PORT;
     
