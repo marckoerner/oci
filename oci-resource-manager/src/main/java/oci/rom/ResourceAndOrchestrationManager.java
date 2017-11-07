@@ -7,14 +7,13 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.SocketAddress;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import oci.locic.ResourceManagerCommunicationThread;
-import oci.rom.adapter.MockResourceManagement;
+import oci.rom.adapter.MininetResourceManagement;
 
 /**
  * The Manager class implements the resource and orchestration manager. It 
@@ -28,7 +27,7 @@ import oci.rom.adapter.MockResourceManagement;
 public class ResourceAndOrchestrationManager {
 	
     public	final static Logger			LOGGER			= Logger.getLogger(ResourceAndOrchestrationManager.class.getName());
-    public	final static byte[]			LOCIC_IP		= {(byte) 127, (byte) 0, (byte) 0, (byte) 1}; 	// LOCIC IP
+    public	final static String			LOCIC_IP		= "172.0.0.1"; 	// LOCIC IP
     public	final static int			LOCIC_PORT		= ResourceManagerCommunicationThread.PORT;
     
 	/**
@@ -44,14 +43,30 @@ public class ResourceAndOrchestrationManager {
 		LOGGER.setUseParentHandlers(false);
 		
 		LOGGER.info("Resource and orchestration manager started");
+		
+		// parse command line arguments
+		String locic_ip = null;
+		if(args.length <= 1) {
+			if(args.length == 1) locic_ip = args[0];
+		} else {
+			System.out.println("Usage: java -jar RnOM.jar [LOCIC IP]");
+			System.out.println("Starts the OCI RnOM adapter and tries to connect to");
+			System.out.println("to the LOCIC at [LOCIC IP]");
+			System.exit(0);
+		}
 
-		// MockResourceManagement can later on be replaced with the regarding resource management implementation (E2, Mininet, OpenStack, ...)
-		GenericResourceManagement resourceManagement = new MockResourceManagement("mockResourceManager");	
-	
+		/**
+		 * MockResourceManagement can later on be replaced with the regarding resource management 
+		 * implementation like E2, Mininet, OpenStack, ...
+		 **/
+		// GenericResourceManagement resourceManagement = new MockResourceManagement("mockResourceManager");
+		GenericResourceManagement resourceManagement = new MininetResourceManagement();
+		
 		try {
 			// connect to local OCI coordinator
 			LOGGER.info("Try to connect to LOCIC");
-			Socket locic							= new Socket(InetAddress.getByAddress(LOCIC_IP), LOCIC_PORT);
+			if(locic_ip == null) locic_ip			= LOCIC_IP;
+			Socket locic							= new Socket(InetAddress.getByName(locic_ip), LOCIC_PORT);	
 			LOGGER.info("Connected to LOCIC");
 			
 			//  Instantiate and start communication thread
@@ -68,6 +83,8 @@ public class ResourceAndOrchestrationManager {
 				
 				// Exit
 				if(inputLine.equals("exit")) {
+					// TODO send "exit" message or null to LOCIC
+					
 					// close socket and wait for thread 
 					locic.close();
 					locicCommunication.join();
