@@ -5,7 +5,7 @@ package oci.lib;
 
 /**
  * @author Marc Koerner
- * This class contains all OCI constants
+ * This class contains all OCI framework constants
  */
 public final class GlobalConstants {
 	

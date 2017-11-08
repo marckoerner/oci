@@ -8,6 +8,9 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import oci.lib.ServiceNameEntry;
@@ -33,6 +36,13 @@ public class EchoEdgeService extends EdgeDiscoveryService {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
+		// set logging output to console
+		Handler handlerObj = new ConsoleHandler();
+		handlerObj.setLevel(Level.ALL);
+		LOGGER.addHandler(handlerObj);
+		LOGGER.setLevel(Level.ALL);
+		LOGGER.setUseParentHandlers(false);
 		
 		LOGGER.info("EchoEdgeService started");
 
