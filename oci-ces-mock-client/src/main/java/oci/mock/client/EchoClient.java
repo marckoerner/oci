@@ -12,6 +12,7 @@ import java.net.Socket;
 import java.util.logging.Logger;
 
 import oci.lib.ServiceNameResolver;
+import oci.lib.GlobalConstants;
 
 
 /**
@@ -28,7 +29,7 @@ public class EchoClient {
 	public final static String	SERVICE_NAME	= "Echo";
 	public final static int		SERVICE_PORT	= 9292;
 	
-    private static final int	SOCKET_TIMEOUT	= 5000; // 5 seconds timeout
+    private static final int	SOCKET_TIMEOUT	= GlobalConstants.SOCKET_TIMEOUT; // 5 seconds timeout
 
 	/**
 	 * @param args
