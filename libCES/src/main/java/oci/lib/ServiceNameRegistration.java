@@ -16,10 +16,10 @@ import java.net.UnknownHostException;
  */
 public class ServiceNameRegistration {
 	
-	public final static byte[]			IPADDRESS		= {(byte) 127, (byte) 0, (byte) 0, (byte) 1}; 	// LOCIC IP (first iteration)
-	public final static int				PORT			= ServiceNameResolver.PORT + 1; // Port 5534
+	public final static byte[]			IPADDRESS		= GlobalConstants.LOCIC_IP_BYTE;					// LOCIC IP (first iteration)
+	public final static int				PORT			= GlobalConstants.PORT_NAME_REGISTRATION;			// Port 5534
 	
-    private final static int			SOCKET_TIMEOUT	= 5000; // 5 seconds timeout
+    private final static int			SOCKET_TIMEOUT	= GlobalConstants.SOCKET_TIMEOUT; // 5 seconds timeout
 	
 	/**
 	 * This method registers an edge service at the local OCI coordinator
