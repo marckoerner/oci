@@ -12,6 +12,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import oci.lib.GlobalConstants;
 import oci.locic.ResourceManagerCommunicationThread;
 import oci.rom.adapter.MininetResourceManagement;
 
@@ -27,7 +28,7 @@ import oci.rom.adapter.MininetResourceManagement;
 public class ResourceAndOrchestrationManager {
 	
     public	final static Logger			LOGGER			= Logger.getLogger(ResourceAndOrchestrationManager.class.getName());
-    public	final static String			LOCIC_IP		= "localhost"; 	// LOCIC IP "172.0.0.1"
+    public	final static String			LOCIC_IP		= GlobalConstants.LOCALHOST_STRING;
     public	final static int			LOCIC_PORT		= ResourceManagerCommunicationThread.PORT;
     
 	/**
