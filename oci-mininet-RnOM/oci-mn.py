@@ -10,7 +10,9 @@ import sys
 # method definitions
 def startService(name, socket, m_net, switch):
     print "start service", name
-    host = m_net.addHost(name)
+
+    # add host and default route
+    host = m_net.addHost(name, defaultRoute='via 10.100.100.1')
 
     m_net.addLink(switch, host)
     
@@ -18,22 +20,22 @@ def startService(name, socket, m_net, switch):
     interfaces = switch.intfs
     if_nr, if_name = interfaces.items()[len(interfaces)-1]
     switch.attach(if_name)
-    print "if_name: ", if_name
-    host.configDefault(defaultRoute = host.defaultIntf())
+    #host.configDefault(defaultRoute = host.defaultIntf())
+    host.configDefault()
 
     # print network configuration information
     print host.cmd('ifconfig')
 
     # test network function
-    #h1 = m_net.getNodeByName('h1')
-    #print host.cmd( 'ping -c4 ', h1.IP() )
     #print h1.cmd('ping -c4 ', host.IP())
 
     # start ssh server
     host.cmd('/usr/sbin/sshd -D &')
 
     # start java edge service
-    #host.cmd('java -jar ./%s' %name)
+    cmd_string = 'java -jar /home/mininet/oci/%s.jar &' %name
+    print cmd_string
+    print host.cmd(cmd_string)
 
     out = 'service %s started\n' % name
     socket.sendall(out)
@@ -136,29 +138,27 @@ sock.listen(1)
 
 # build initial mininet topology
 net = Mininet()
-#h1 = net.addHost('h1')
-#h2 = net.addHost('h2')
-
 s1 = net.addSwitch('s1', cls=OVSBridge)
-
-for n in xrange(1, number+1):
-    tmp_name = 'h' + str(n)
-    print "add client host ", tmp_name
-    tmp_host = net.addHost(tmp_name)
-    net.addLink(s1,tmp_host)
-    # start sshd on all hosts
-    tmp_host.cmd('/usr/sbin/sshd -D &')
-
-#net.addLink(s1,h1)
-#net.addLink(s1,h2)
 
 # Create a gateway node in root namespace
 ip = '10.100.100.1/8'
 root = Node('root', inNamespace=False)
 intf = net.addLink(root, s1).intf1
 root.setIP(ip, intf=intf)
-#print 'ip route add net 10.0.0.0/8 via 10.100.100.1 dev', str(intf)
-#root.cmd('ip route add net 10.0.0.0/8 via 10.100.100.1 dev' + str(intf))
+
+# create client nodes
+for n in xrange(1, number+1):
+    tmp_name = 'h' + str(n)
+    print "add client host ", tmp_name
+    tmp_host = net.addHost(tmp_name, defaultRoute='via 10.100.100.1')
+    net.addLink(s1,tmp_host)
+    #cmd = 'ip add route default via 10.100.100.1 dev %s' %tmp_host.defaultIntf()
+    #print cmd
+    #tmp_host.cmd(cmd)
+    # start sshd on all hosts
+    tmp_host.cmd('/usr/sbin/sshd -D &')
+    #tmp_host.cmd(cmd)
+
 
 #net.build()
 net.start()
