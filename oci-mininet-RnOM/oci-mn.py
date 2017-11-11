@@ -7,12 +7,15 @@ from mininet.node import Node, OVSBridge
 import socket
 import sys
 
+gateway_ip = '10.100.100.1'
+
 # method definitions
 def startService(name, socket, m_net, switch):
     print "start service", name
 
     # add host and default route
-    host = m_net.addHost(name, defaultRoute='via 10.100.100.1')
+    route = 'via ' + gateway_ip
+    host = m_net.addHost(name, defaultRoute=route)
 
     m_net.addLink(switch, host)
     
@@ -50,7 +53,9 @@ def stopService(name, socket, m_net, switch):
 
     #switch.detach()
     # kill java 
-    # host.cmd('kill')
+    cmd = "ps -ef | grep " + name + " | grep -v grep | awk '{ print $2 }'"
+    pid = host.cmd(cmd)
+    host.cmd('kill ' + pid)
 
     # kill sshd 
     cmd = '/usr/sbin/sshd'
@@ -141,7 +146,7 @@ net = Mininet()
 s1 = net.addSwitch('s1', cls=OVSBridge)
 
 # Create a gateway node in root namespace
-ip = '10.100.100.1/8'
+ip = gateway_ip + '/8'
 root = Node('root', inNamespace=False)
 intf = net.addLink(root, s1).intf1
 root.setIP(ip, intf=intf)
@@ -150,14 +155,11 @@ root.setIP(ip, intf=intf)
 for n in xrange(1, number+1):
     tmp_name = 'h' + str(n)
     print "add client host ", tmp_name
-    tmp_host = net.addHost(tmp_name, defaultRoute='via 10.100.100.1')
+    tmp_route = 'via ' + gateway_ip
+    tmp_host = net.addHost(tmp_name, defaultRoute=tmp_route)
     net.addLink(s1,tmp_host)
-    #cmd = 'ip add route default via 10.100.100.1 dev %s' %tmp_host.defaultIntf()
-    #print cmd
-    #tmp_host.cmd(cmd)
     # start sshd on all hosts
     tmp_host.cmd('/usr/sbin/sshd -D &')
-    #tmp_host.cmd(cmd)
 
 
 #net.build()
@@ -215,7 +217,8 @@ finally:
     print "kill all sshd"
     cmd = '/usr/sbin/sshd'
     for host in net.hosts:
-        host.cmd( 'kill %' + cmd )
+        host.cmd('kill %' + cmd)
+        host.cmd('killall java')
 
     print "close mn network"
     #root.stop()
