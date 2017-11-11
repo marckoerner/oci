@@ -47,9 +47,9 @@ public class EchoEdgeService extends EdgeDiscoveryService {
 		LOGGER.info("EchoEdgeService started");
 
 		LOGGER.info("Try to open a server socket");
+		int serviceKey = ServiceNameEntry.NO_KEY;
 		try {
-			
-			int serviceKey = ServiceNameRegistration.registerEdgeService(SERVICE_NAME, InetAddress.getByName("localhost"));
+			serviceKey = ServiceNameRegistration.registerEdgeService(SERVICE_NAME, InetAddress.getByName("localhost"));
 			if(serviceKey == ServiceNameEntry.NO_KEY) {
 				LOGGER.info("Service Name Registration failed");
 				LOGGER.info("Exit program");
@@ -83,6 +83,14 @@ public class EchoEdgeService extends EdgeDiscoveryService {
 		} catch (Exception error) {
 			LOGGER.warning(error.getMessage());
 			LOGGER.warning(error.getStackTrace().toString());
+			
+			if(serviceKey != ServiceNameEntry.NO_KEY) {
+				try {
+					ServiceNameRegistration.unregisterEdgeService(SERVICE_NAME, serviceKey);
+				} catch(Exception e) {
+					LOGGER.warning("Failed to de-register service key!");
+				}
+			}
 			
 		} // try - catch
 		
