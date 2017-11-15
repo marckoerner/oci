@@ -49,12 +49,15 @@ public class EchoEdgeService extends EdgeDiscoveryService {
 		LOGGER.info("Try to open a server socket");
 		int serviceKey = ServiceNameEntry.NO_KEY;
 		try {
+			// DEPRECATED: registration is now covered by RnOM
+			/**
 			serviceKey = ServiceNameRegistration.registerEdgeService(SERVICE_NAME, InetAddress.getByName("localhost"));
 			if(serviceKey == ServiceNameEntry.NO_KEY) {
 				LOGGER.info("Service Name Registration failed");
 				LOGGER.info("Exit program");
 				return;
 			}
+			**/
 			
 			@SuppressWarnings("resource")
 			ServerSocket serverSocket = new ServerSocket(SERVICE_PORT);

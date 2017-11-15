@@ -2,7 +2,11 @@ package oci.rom;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
+
+import oci.lib.ServiceNameEntry;
+import oci.lib.ServiceNameRegistration;
 
 /**
  * This thread handles the Local-OCI-Coordinator communication
@@ -21,6 +25,7 @@ public class LocicCommunicationThread extends Thread {
 	
 	@Override
 	public void run() {
+		//TODO redesign RnOM <-> LOCIC communication: stop edge service!?
 		
 		String serviceName = null;
 		
@@ -52,11 +57,31 @@ public class LocicCommunicationThread extends Thread {
 					ResourceAndOrchestrationManager.LOGGER.info("Resources are available - try to start edge service");
 
 					if(resourceManager.startEdgeService(serviceName)) {
-						ResourceAndOrchestrationManager.LOGGER.info("Edge Service " + serviceName + " started");
+						
+						// getAddress
+						InetAddress edge_service_ip = resourceManager.getEdgeServiceIP(serviceName);
+						if(edge_service_ip != null) {
+							
+							// try to register edge service @ LOCIC
+							int serviceKey = ServiceNameRegistration.registerEdgeService(serviceName, InetAddress.getByName("localhost"));
+							if(serviceKey == ServiceNameEntry.NO_KEY) {
+								ResourceAndOrchestrationManager.LOGGER.warning("Service Name Registration failed");
+								// break;
+							} else {
+								ResourceAndOrchestrationManager.LOGGER.info("Service Name Registration successful");
+								oos.writeBoolean(false);
+							}
+							
+						} else {
+							ResourceAndOrchestrationManager.LOGGER.warning("No edge service IP information");
+							oos.writeBoolean(false);
+						}
+						
 						oos.writeBoolean(true);
+						ResourceAndOrchestrationManager.LOGGER.info("Edge Service " + serviceName + " started");
 					} else {
-						ResourceAndOrchestrationManager.LOGGER.info("Edge Service " + serviceName + " not started due to unknown reason");
 						oos.writeBoolean(false);
+						ResourceAndOrchestrationManager.LOGGER.info("Edge Service " + serviceName + " not started due to unknown reason");
 					}
 					oos.flush();
 					
