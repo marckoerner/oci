@@ -17,7 +17,9 @@ public abstract class EdgeService {
 		
 	}
 	
-	
+	public void onStart() {
+		
+	}
 	
 
 }
