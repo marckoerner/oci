@@ -22,9 +22,13 @@ public class Evaluation
         System.out.println( "LOCIC based Name Service Lookup Benchmark" );
         
         String	locic_ip		= "localhost";
-        int		entries			= 1000;
+        int		entries			= 100;
         int		probes			= 50;
-        int		probe_offset	= 250;
+        int		probe_offset	= 0;
+        // delay in ms
+        int		reg_delay		= 0;
+        int		req_delay		= 0;
+        // value separator in csv file
         String	seperator		= ";";
         
         long	startTime;
@@ -61,7 +65,7 @@ public class Evaluation
     			if(serviceKey == ServiceNameEntry.NO_KEY) {
     				errors++;
     			}
-    			// Thread.sleep(1); // ms
+    			Thread.sleep(reg_delay);
 
     		} catch(Exception error) {
     			error.printStackTrace();
@@ -71,10 +75,12 @@ public class Evaluation
         }
         
         // write probes to file
+        float time_ms = 0;
     	try {
     		for(Long time : times) {
-				bWriter.write(time + seperator);
-				System.out.print(time + seperator);
+    			time_ms = (float) time / (float) 1000000;
+				bWriter.write(String.format("%.3f", time_ms) + seperator);
+				System.out.print(String.format("%.3f", time_ms) + seperator);
     		}
     		bWriter.newLine();
     		bWriter.flush();
@@ -107,6 +113,7 @@ public class Evaluation
     			if(serviceKey == ServiceNameEntry.NO_KEY) {
     				errors++;
     			}
+    			Thread.sleep(req_delay); // ms
 
     		} catch(Exception error) {
     			error.printStackTrace();
@@ -118,8 +125,9 @@ public class Evaluation
         // writes probes to file
     	try {
     		for(Long time : times) {
-				bWriter.write(time + seperator);
-				System.out.print(time + seperator);
+    			time_ms = (float) time / (float) 1000000;
+				bWriter.write(String.format("%.3f",time_ms) + seperator);
+				System.out.print(String.format("%.3f", time_ms) + seperator);
     		}
     		bWriter.newLine();
     		bWriter.flush();
