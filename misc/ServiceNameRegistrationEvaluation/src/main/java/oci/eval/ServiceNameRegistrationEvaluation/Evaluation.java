@@ -22,14 +22,14 @@ public class Evaluation
         System.out.println( "LOCIC based Name Service Lookup Benchmark" );
         
         String	locic_ip		= "localhost";
-        int		entries			= 1000;
-        int		probes			= 10;
-        int		probe_offset	= 10;
+        int		entries			= 2000;
+        int		probes			= 250;
+        int		probe_offset	= 0;
         // delay in ms
         int		reg_delay		= 0;
         int		req_delay		= 0;
         // value separator in csv file
-        String	fileName		= "samples_1000_10_mac_rand-1000-2500.csv";
+        String	fileName		= "samples_read_2000_250_mac_rand-1000-2500.csv";
         String	seperator		= ";";
         
         long	startTime;
@@ -66,7 +66,7 @@ public class Evaluation
     			if(serviceKey == ServiceNameEntry.NO_KEY) {
     				errors++;
     			}
-    			Thread.sleep(pause());
+    			// Thread.sleep(pause());
 
     		} catch(Exception error) {
     			error.printStackTrace();
@@ -113,7 +113,10 @@ public class Evaluation
         	
         	if(errors > 5) return;
         	
-            serviceName = "test" + probe;
+        	// generate random service name within service boundaries
+        	Double d = Math.random() * entries;
+        	serviceName = "test" + d.intValue();
+            //serviceName = "test" + probe;
         	
     		try {
     			startTime	= System.nanoTime();
