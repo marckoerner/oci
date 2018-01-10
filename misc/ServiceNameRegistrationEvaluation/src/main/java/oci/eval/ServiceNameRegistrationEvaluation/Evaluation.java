@@ -22,13 +22,14 @@ public class Evaluation
         System.out.println( "LOCIC based Name Service Lookup Benchmark" );
         
         String	locic_ip		= "localhost";
-        int		entries			= 100;
-        int		probes			= 50;
-        int		probe_offset	= 0;
+        int		entries			= 1000;
+        int		probes			= 10;
+        int		probe_offset	= 10;
         // delay in ms
         int		reg_delay		= 0;
         int		req_delay		= 0;
         // value separator in csv file
+        String	fileName		= "samples_1000_10_mac_rand-1000-2500.csv";
         String	seperator		= ";";
         
         long	startTime;
@@ -38,7 +39,7 @@ public class Evaluation
         int		serviceKey	= ServiceNameEntry.NO_KEY;
         int		errors		= 0;
         
-        File			samples	= new File("samples.csv");
+        File			samples	= new File(fileName);
         FileWriter		fWriter = null;
 		try {
 			fWriter = new FileWriter(samples);
@@ -65,7 +66,7 @@ public class Evaluation
     			if(serviceKey == ServiceNameEntry.NO_KEY) {
     				errors++;
     			}
-    			Thread.sleep(reg_delay);
+    			Thread.sleep(pause());
 
     		} catch(Exception error) {
     			error.printStackTrace();
@@ -76,14 +77,23 @@ public class Evaluation
         
         // write probes to file
         float time_ms = 0;
+        float time_ms_average = 0;
     	try {
     		for(Long time : times) {
     			time_ms = (float) time / (float) 1000000;
+    			time_ms_average += time_ms;
 				bWriter.write(String.format("%.3f", time_ms) + seperator);
 				System.out.print(String.format("%.3f", time_ms) + seperator);
     		}
     		bWriter.newLine();
     		bWriter.flush();
+    		
+    		time_ms_average = time_ms_average - (float) (times.get(0) / 1000000);
+    		time_ms_average = time_ms_average / (entries - 1);
+    		bWriter.write(String.format("%.3f",time_ms_average) + seperator);
+    		bWriter.newLine();
+    		bWriter.flush();
+    		
     		System.out.println();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -113,7 +123,7 @@ public class Evaluation
     			if(serviceKey == ServiceNameEntry.NO_KEY) {
     				errors++;
     			}
-    			Thread.sleep(req_delay); // ms
+    			Thread.sleep(pause()); // ms
 
     		} catch(Exception error) {
     			error.printStackTrace();
@@ -123,12 +133,20 @@ public class Evaluation
         }
         
         // writes probes to file
+        time_ms_average = 0;
     	try {
     		for(Long time : times) {
     			time_ms = (float) time / (float) 1000000;
+    			time_ms_average += time_ms;
 				bWriter.write(String.format("%.3f",time_ms) + seperator);
 				System.out.print(String.format("%.3f", time_ms) + seperator);
     		}
+    		bWriter.newLine();
+    		bWriter.flush();
+    		
+    		time_ms_average = time_ms_average - (float) (times.get(0) / 1000000);
+    		time_ms_average = time_ms_average / (probes - 1);
+    		bWriter.write(String.format("%.3f",time_ms_average) + seperator);
     		bWriter.newLine();
     		bWriter.flush();
     		System.out.println();
@@ -142,4 +160,17 @@ public class Evaluation
 
         return;
     } // main
+    
+    public static long pause() {
+    	long offset = 1000; //ms
+    	long max	= 2500;
+    	
+    	long pause = 0;
+    	pause = (long) (Math.random() * max) + offset; // time between [offset] and [offset + max]
+    	
+    	return pause;
+    }
+    
+    
+    
 } // App
