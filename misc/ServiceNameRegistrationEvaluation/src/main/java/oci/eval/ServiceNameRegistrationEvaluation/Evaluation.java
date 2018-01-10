@@ -22,14 +22,14 @@ public class Evaluation
         System.out.println( "LOCIC based Name Service Lookup Benchmark" );
         
         String	locic_ip		= "localhost";
-        int		entries			= 2000;
+        int		entries			= 10000;
         int		probes			= 250;
         int		probe_offset	= 0;
         // delay in ms
         int		reg_delay		= 0;
         int		req_delay		= 0;
         // value separator in csv file
-        String	fileName		= "samples_read_2000_250_mac_rand-1000-2500.csv";
+        String	fileName		= "samples_read_10000_250_mac_rand-1000-2500.csv";
         String	seperator		= ";";
         
         long	startTime;
