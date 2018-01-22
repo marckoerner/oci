@@ -23,13 +23,13 @@ public class Evaluation
         
         String	locic_ip		= "localhost";
         int		entries			= 200;
-        int		probes			= 250;
+        int		probes			= 20;
         int		probe_offset	= 0;
         // delay in ms
         int		reg_delay		= 0;
         int		req_delay		= 0;
         // value separator in csv file
-        String	fileName		= "samples_read_200_250_mac_rand-1000-2500.csv";
+        String	fileName		= "samples_read_200_20_mac_rand-1000-2500.csv";
         String	seperator		= ";";
         
         long	startTime;
