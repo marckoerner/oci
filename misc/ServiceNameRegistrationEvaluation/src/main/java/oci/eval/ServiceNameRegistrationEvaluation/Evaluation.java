@@ -177,6 +177,16 @@ public class Evaluation
 		stopTime	= System.nanoTime();
 		System.out.println("Performance3: " + (stopTime - startTime));
     	
+		startTime	= System.nanoTime();
+    	rand_sum	= 6+10;
+		stopTime	= System.nanoTime();
+		System.out.println("Performance4: " + (stopTime - startTime));
+		
+		startTime	= System.nanoTime();
+    	rand_sum	= 36+10;
+		stopTime	= System.nanoTime();
+		System.out.println("Performance5: " + (stopTime - startTime));
+    	
     	
 
         return;
