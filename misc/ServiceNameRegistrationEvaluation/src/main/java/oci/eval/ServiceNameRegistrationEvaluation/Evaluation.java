@@ -22,14 +22,14 @@ public class Evaluation
         System.out.println( "LOCIC based Name Service Lookup Benchmark" );
         
         String	locic_ip		= "localhost";
-        int		entries			= 10000;
+        int		entries			= 200;
         int		probes			= 250;
         int		probe_offset	= 0;
         // delay in ms
         int		reg_delay		= 0;
         int		req_delay		= 0;
         // value separator in csv file
-        String	fileName		= "samples_read_10000_250_mac_rand-1000-2500.csv";
+        String	fileName		= "samples_read_200_250_mac_rand-1000-2500.csv";
         String	seperator		= ";";
         
         long	startTime;
@@ -160,6 +160,24 @@ public class Evaluation
 			e.printStackTrace();
 			return;
 		}
+    	
+    	// measure just system compute performance
+    	startTime	= System.nanoTime();
+    	double rand_sum = Math.random() + Math.random();
+		stopTime	= System.nanoTime();
+		System.out.println("Performance1: " + (stopTime - startTime));
+		
+		startTime	= System.nanoTime();
+    	rand_sum	= Math.random() + Math.random();
+		stopTime	= System.nanoTime();
+		System.out.println("Performance2: " + (stopTime - startTime));
+		
+		startTime	= System.nanoTime();
+    	rand_sum	= Math.random() + Math.random();
+		stopTime	= System.nanoTime();
+		System.out.println("Performance3: " + (stopTime - startTime));
+    	
+    	
 
         return;
     } // main
