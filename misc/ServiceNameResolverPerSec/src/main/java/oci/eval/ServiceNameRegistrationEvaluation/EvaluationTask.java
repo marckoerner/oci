@@ -16,13 +16,13 @@ public class EvaluationTask extends Thread
     	String serviceName = "service" + d.intValue();
     	
     	// generate random start time to model poission arrival of client request
-    	Double randomStartTime_ms = Math.random() * (EvaluationServiceNameResolverPerSec.periodicDelay/1000000);
-
-		try {
-			Thread.sleep(randomStartTime_ms.intValue());
-		} catch (InterruptedException e) {
-			// nothing
-		}
+//    	Double randomStartTime_ms = Math.random() * (EvaluationServiceNameResolverPerSec.periodicDelay/1000000);
+//
+//		try {
+//			Thread.sleep(randomStartTime_ms.intValue());
+//		} catch (InterruptedException e) {
+//			// nothing
+//		}
 		
 		try {
 			long startTime	= System.nanoTime();
