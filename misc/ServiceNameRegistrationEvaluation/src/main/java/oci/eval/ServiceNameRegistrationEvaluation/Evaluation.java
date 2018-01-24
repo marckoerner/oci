@@ -23,8 +23,8 @@ public class Evaluation
         
         
         String	locic_ip		= "localhost";
-        if(args.length > 1) {
-        	locic_ip			= args[1];
+        if(args.length == 1) {
+        	locic_ip			= args[0];
         }
         System.out.println("Connect to: " + locic_ip);
         
