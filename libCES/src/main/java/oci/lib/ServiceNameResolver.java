@@ -35,6 +35,7 @@ public class ServiceNameResolver {
 		try {			
 			Socket locicSocket = new Socket(InetAddress.getByAddress(IPADDRESS), PORT);
 			locicSocket.setSoTimeout(SOCKET_TIMEOUT);
+			locicSocket.setTcpNoDelay(true);
 			
 			// create object streams (later UDP set/get implementation)
 			ObjectOutputStream	oos = new ObjectOutputStream(locicSocket.getOutputStream());
