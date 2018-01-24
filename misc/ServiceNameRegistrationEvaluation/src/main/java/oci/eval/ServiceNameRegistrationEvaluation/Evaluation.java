@@ -21,7 +21,8 @@ public class Evaluation
     {
         System.out.println( "LOCIC based Name Service Lookup Benchmark" );
         
-        String	locic_ip		= "localhost";
+        // String	locic_ip		= "localhost";
+        String	locic_ip		= "10.142.36.78";
         int		entries			= 200;
         int		probes			= 20;
         int		probe_offset	= 0;
