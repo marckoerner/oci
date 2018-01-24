@@ -26,6 +26,7 @@ public class Evaluation
         if(args.length > 1) {
         	locic_ip			= args[1];
         }
+        System.out.println("Connect to: " + locic_ip);
         
         int		entries			= 200;
         int		probes			= 20;
