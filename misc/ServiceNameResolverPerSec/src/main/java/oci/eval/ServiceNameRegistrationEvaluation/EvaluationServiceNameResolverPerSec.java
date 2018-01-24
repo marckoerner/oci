@@ -26,11 +26,13 @@ public class EvaluationServiceNameResolverPerSec
 	public static int entries = 100;
 	public static int experminentationTimeSeconds = 10;
 	public static long periodicDelay;
-
+	
 	static File samples	= new File("samples.csv");
 	static FileWriter fWriter = null;
 	// value separator in csv file
 	static String seperator	= ";";
+	
+	static ScheduledExecutorService scheduler;
 
 	// writes probes to file
 	public static void writeMeasurementResultsToFile() {
@@ -94,8 +96,8 @@ public class EvaluationServiceNameResolverPerSec
 		String	serviceName	= null;
 		int		serviceKey	= ServiceNameEntry.NO_KEY;
 
-		int loadStart = 500; // number of loadCurr client requests per seconds
-		int loadStep = 500;
+		int loadStart = 1; // number of loadCurr client requests per seconds
+		int loadStep = 1;
 		int loadEnd = 10000;	
 		//int loadCurr = 1;
 		
@@ -125,6 +127,8 @@ public class EvaluationServiceNameResolverPerSec
 		//for(loadCurr = loadStart; loadCurr >= loadEnd; loadCurr = loadCurr - loadStep)
 		for(loadCurr = loadStart; loadCurr <= loadEnd; loadCurr = loadCurr + loadStep)
 		{
+			Vector<EvaluationTask> evaluationTaskVector = new Vector<EvaluationTask>();
+			final Vector<Future<?>> scheduledTaskVector = new Vector<Future<?>>();
 
 
 			// start LOCIC
@@ -138,30 +142,53 @@ public class EvaluationServiceNameResolverPerSec
 
 			// 2. actual work: benchmarking edge service name resolution to obtain edge service IP 
 
-			ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(4);
+//			ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(4);
 			//ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+			
+//			if (!scheduler.isShutdown()) {
+//				scheduler.shutdownNow();
+//			}
 
-			EvaluationTask evaluationTask1 = new EvaluationTask();
-			EvaluationTask evaluationTask2 = new EvaluationTask();
-			EvaluationTask evaluationTask3 = new EvaluationTask();
-			EvaluationTask evaluationTask4 = new EvaluationTask();
+			scheduler = Executors.newScheduledThreadPool(loadCurr);			
+
+			for (int i=0;i<loadCurr;i++) {
+				EvaluationTask evaluationTask1 = new EvaluationTask();	
+				evaluationTaskVector.add(evaluationTask1);				
+			}
+					
+//			EvaluationTask evaluationTask2 = new EvaluationTask();
+//			EvaluationTask evaluationTask3 = new EvaluationTask();
+//			EvaluationTask evaluationTask4 = new EvaluationTask();
 
 			//periodicDelay = (long) 4*(1000000000/loadCurr)/2; // multiplied by 4 for four threads; divided by 2 to model poisson arrival of client requests
-			periodicDelay = (long) 4*(1000000000/loadCurr);
-			//periodicDelay = (long) (1000000000/loadCurr); 
+//			periodicDelay = (long) 4*(1000000000/loadCurr);
+//			periodicDelay = (long) (1000000000/loadCurr);
+			periodicDelay = (long) (1000000000);
 			long initialDelay = periodicDelay/4;
 
-			final Future<?> f1 = scheduler.scheduleAtFixedRate(evaluationTask1, 0, periodicDelay, TimeUnit.NANOSECONDS);
-			final Future<?> f2 = scheduler.scheduleAtFixedRate(evaluationTask2, initialDelay, periodicDelay, TimeUnit.NANOSECONDS);
-			final Future<?> f3 = scheduler.scheduleAtFixedRate(evaluationTask3, initialDelay*2, periodicDelay, TimeUnit.NANOSECONDS);
-			final Future<?> f4 = scheduler.scheduleAtFixedRate(evaluationTask4, initialDelay*3, periodicDelay, TimeUnit.NANOSECONDS);
+			
+			for (int i=0;i<loadCurr;i++) {
+				EvaluationTask evaluationTask1 = evaluationTaskVector.get(i);
+				final Future<?> f1 = scheduler.scheduleAtFixedRate(evaluationTask1, 0, periodicDelay, TimeUnit.NANOSECONDS);
+				scheduledTaskVector.add(f1);				
+			}			
+			
+//			final Future<?> f2 = scheduler.scheduleAtFixedRate(evaluationTask2, initialDelay, periodicDelay, TimeUnit.NANOSECONDS);
+//			final Future<?> f3 = scheduler.scheduleAtFixedRate(evaluationTask3, initialDelay*2, periodicDelay, TimeUnit.NANOSECONDS);
+//			final Future<?> f4 = scheduler.scheduleAtFixedRate(evaluationTask4, initialDelay*3, periodicDelay, TimeUnit.NANOSECONDS);
 
 			Runnable cancelTask = new Runnable() {
 				public void run() {
-					f1.cancel(true);
-					f2.cancel(true);
-					f3.cancel(true);
-					f4.cancel(true);
+					for (int i=0;i<loadCurr;i++) {
+						final Future<?> scheduledTask = scheduledTaskVector.get(i);
+						scheduledTask.cancel(true);						
+								
+					}
+					
+//					f1.cancel(true);
+//					f2.cancel(true);
+//					f3.cancel(true);
+//					f4.cancel(true);
 
 					EvaluationServiceNameResolverPerSec.writeMeasurementResultsToFile();		
 				}
@@ -169,7 +196,7 @@ public class EvaluationServiceNameResolverPerSec
 
 			final Future<?> cancelHandle = scheduler.schedule(cancelTask, experminentationTimeSeconds, TimeUnit.SECONDS);
 
-			while (!cancelHandle.isDone() && !f1.isCancelled() ) {
+			while (!cancelHandle.isDone() ) {
 				try {
 					Thread.sleep(experminentationTimeSeconds*1000);
 				} catch (InterruptedException e) {
@@ -177,6 +204,8 @@ public class EvaluationServiceNameResolverPerSec
 					e.printStackTrace();
 				}			
 			}
+			
+			scheduler.shutdownNow();
 
 			// kill LOCIC
 
