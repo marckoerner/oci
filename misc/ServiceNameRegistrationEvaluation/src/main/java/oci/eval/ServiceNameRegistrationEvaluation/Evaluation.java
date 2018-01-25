@@ -27,13 +27,14 @@ public class Evaluation
         int		max_delay		= 0;
         
         // if no arguments are given
-        if((args.length == 0) || (args.length > 4)) {
+        if(args.length != 4) {
         	System.out.println("Usage Parameters: [entries] [probes] [min_delay_ms] [max_delay_ms]");
         } else {
         	entries		= Integer.getInteger(args[1]);
         	probes		= Integer.getInteger(args[2]);
         	min_delay	= Integer.getInteger(args[3]);
         	max_delay	= Integer.getInteger(args[4]);
+        	System.exit(0);
         }
 
         String	locic_ip		= "localhost";
@@ -224,7 +225,7 @@ public class Evaluation
      */
     public static long pause(int min, int max) {
     	long pause = 0;
-    	pause = (long) (Math.random() * max) + min; // time between [offset] and [offset + max]
+    	pause = (long) (Math.random() * (max-min)) + min; // time between [offset] and [offset + max]
     	return pause;
     }
     
