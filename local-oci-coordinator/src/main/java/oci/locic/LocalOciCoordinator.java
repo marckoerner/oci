@@ -14,6 +14,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import oci.lib.GlobalConstants;
 import oci.lib.ServiceNameEntry;
 import oci.lib.ServiceNameRegistration;
 import oci.lib.ServiceNameResolver;
@@ -25,7 +26,7 @@ import oci.lib.ServiceNameResolver;
 public class LocalOciCoordinator {
 	
     static final Logger			LOGGER			= Logger.getLogger(LocalOciCoordinator.class.getName());
-    static final int			SOCKET_TIMEOUT	= 5000; // 5 seconds timeout
+    static final int			SOCKET_TIMEOUT	= GlobalConstants.SOCKET_TIMEOUT;
 
     /**
 	 * vector with discovery service name to IP mapping entries
