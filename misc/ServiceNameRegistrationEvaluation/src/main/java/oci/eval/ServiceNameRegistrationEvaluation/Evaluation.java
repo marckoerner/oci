@@ -21,21 +21,27 @@ public class Evaluation
     {
         System.out.println( "LOCIC based Name Service Lookup Benchmark" );
         
-        
-        String	locic_ip		= "localhost";
-        if(args.length == 1) {
-        	locic_ip			= args[0];
-        }
-        System.out.println("Connect to: " + locic_ip);
-        
         int		entries			= 200;
         int		probes			= 20;
+        int		min_delay		= 0;
+        int		max_delay		= 0;
+        
+        // if no arguments are given
+        if((args.length == 0) || (args.length > 4)) {
+        	System.out.println("Usage Parameters: [entries] [probes] [min_delay_ms] [max_delay_ms]");
+        } else {
+        	entries		= Integer.getInteger(args[1]);
+        	probes		= Integer.getInteger(args[2]);
+        	min_delay	= Integer.getInteger(args[3]);
+        	max_delay	= Integer.getInteger(args[4]);
+        }
+
+        String	locic_ip		= "localhost";
+        
         int		probe_offset	= 0;
-        // delay in ms
-        int		reg_delay		= 0;
-        int		req_delay		= 0;
+        
         // value separator in csv file
-        String	fileName		= "samples_read_200_20_mac_rand-1000-2500.csv";
+        String	fileName		= "samples_read_" + entries + "_" + probes + "_rand-" + min_delay + "-" + max_delay + ".csv";
         String	seperator		= ";";
         
         long	startTime;
@@ -132,7 +138,7 @@ public class Evaluation
     			if(serviceKey == ServiceNameEntry.NO_KEY) {
     				errors++;
     			}
-    			Thread.sleep(pause()); // ms
+    			Thread.sleep(pause(min_delay, max_delay)); // ms
 
     		} catch(Exception error) {
     			error.printStackTrace();
@@ -198,16 +204,29 @@ public class Evaluation
         return;
     } // main
     
+    /**
+     * provides a random value between 1000 and 2500
+     * @return random value
+     */
     public static long pause() {
     	long offset = 1000; //ms
     	long max	= 2500;
-    	
     	long pause = 0;
-    	pause = (long) (Math.random() * max) + offset; // time between [offset] and [offset + max]
-    	
+    	pause = (long) (Math.random() * max) + offset; // time between [offset] and [offset + max]	
     	return pause;
     }
-    
+
+    /**
+     * provides a random value between min and max
+     * @param min smallest random value
+     * @param max biggest random value
+     * @return random value
+     */
+    public static long pause(int min, int max) {
+    	long pause = 0;
+    	pause = (long) (Math.random() * max) + min; // time between [offset] and [offset + max]
+    	return pause;
+    }
     
     
 } // App
