@@ -31,7 +31,7 @@ public class Evaluation
         	System.out.println("Usage Parameters: [entries] [probes] [min_delay_ms] [max_delay_ms]");
         	System.exit(0);
         } else {
-        	entries		= Integer.parseInt(args[1]);
+        	entries		= Integer.parseInt(args[0]);
         	probes		= Integer.parseInt(args[1]);
         	min_delay	= Integer.parseInt(args[2]);
         	max_delay	= Integer.parseInt(args[3]);
@@ -174,34 +174,7 @@ public class Evaluation
 			return;
 		}
     	
-    	// measure just system compute performance
-    	startTime	= System.nanoTime();
-    	double rand_sum = Math.random() + Math.random();
-		stopTime	= System.nanoTime();
-		System.out.println("Performance1: " + (stopTime - startTime));
-		
-		startTime	= System.nanoTime();
-    	rand_sum	= Math.random() + Math.random();
-		stopTime	= System.nanoTime();
-		System.out.println("Performance2: " + (stopTime - startTime));
-		
-		startTime	= System.nanoTime();
-    	rand_sum	= Math.random() + Math.random();
-		stopTime	= System.nanoTime();
-		System.out.println("Performance3: " + (stopTime - startTime));
     	
-		startTime	= System.nanoTime();
-    	rand_sum	= 6+10;
-		stopTime	= System.nanoTime();
-		System.out.println("Performance4: " + (stopTime - startTime));
-		
-		startTime	= System.nanoTime();
-    	rand_sum	= 36+10;
-		stopTime	= System.nanoTime();
-		System.out.println("Performance5: " + (stopTime - startTime));
-    	
-    	
-
         return;
     } // main
     
@@ -228,6 +201,5 @@ public class Evaluation
     	pause = (long) (Math.random() * (max-min)) + min; // time between [offset] and [offset + max]
     	return pause;
     }
-    
     
 } // App
