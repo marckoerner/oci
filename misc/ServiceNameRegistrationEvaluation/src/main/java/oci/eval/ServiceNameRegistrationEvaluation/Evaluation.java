@@ -29,12 +29,12 @@ public class Evaluation
         // if no arguments are given
         if(args.length != 4) {
         	System.out.println("Usage Parameters: [entries] [probes] [min_delay_ms] [max_delay_ms]");
-        } else {
-        	entries		= Integer.getInteger(args[0]);
-        	probes		= Integer.getInteger(args[1]);
-        	min_delay	= Integer.getInteger(args[2]);
-        	max_delay	= Integer.getInteger(args[3]);
         	System.exit(0);
+        } else {
+        	entries		= Integer.parseInt(args[1]);
+        	probes		= Integer.parseInt(args[1]);
+        	min_delay	= Integer.parseInt(args[2]);
+        	max_delay	= Integer.parseInt(args[3]);
         }
 
         String	locic_ip		= "localhost";
