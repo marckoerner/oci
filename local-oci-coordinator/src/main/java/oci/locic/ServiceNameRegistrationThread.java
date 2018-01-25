@@ -37,6 +37,8 @@ public class ServiceNameRegistrationThread extends Thread {
 				// blocking accept is ended when client connects or LOCIC main closes the server socket => exception
 				serviceRegistrationClient = this.serverSocket.accept();
 				LocalOciCoordinator.LOGGER.info("ServiceNameRegistration client connected");
+				serviceRegistrationClient.setSoTimeout(LocalOciCoordinator.SOCKET_TIMEOUT);
+				serviceRegistrationClient.setTcpNoDelay(true);
 				
 				// create object streams for service name to IP resolution
 				ObjectOutputStream	oos = new ObjectOutputStream(serviceRegistrationClient.getOutputStream());
