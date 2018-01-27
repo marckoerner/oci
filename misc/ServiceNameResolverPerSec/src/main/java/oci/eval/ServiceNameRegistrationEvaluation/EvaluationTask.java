@@ -25,9 +25,9 @@ public class EvaluationTask extends Thread
 //		}
 		
 		try {
-			long startTime	= System.nanoTime();
+			long startTime	= System.currentTimeMillis();
 			ServiceNameResolver.getEdgeServiceIpAddress(serviceName);
-			long stopTime	= System.nanoTime();
+			long stopTime	= System.currentTimeMillis();
 			EvaluationServiceNameResolverPerSec.times.add(stopTime - startTime);
 			
 		} 
