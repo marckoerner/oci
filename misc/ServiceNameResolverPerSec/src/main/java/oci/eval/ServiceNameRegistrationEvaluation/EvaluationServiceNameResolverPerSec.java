@@ -20,11 +20,12 @@ import java.util.concurrent.*;
 public class EvaluationServiceNameResolverPerSec
 {
 
-	public static Vector<Long> times = new Vector<Long>();
+	public static Vector<Long> times = null;
 	public static int loadCurr = 0;
 	public static int errors = 0;
 	public static int entries = 100;
-	public static int experminentationTimeSeconds = 10;
+	public static Integer numberOfLookup = 0;
+	public static int experminentationTimeSeconds = 30;
 	public static long periodicDelay;
 
 	static File logFile	= null;
@@ -34,6 +35,7 @@ public class EvaluationServiceNameResolverPerSec
 	static String seperator	= " | ";
 
 	static ScheduledExecutorService scheduler;
+	public static boolean poisson = true;
 
 	// writes probes to file
 	public static void writeMeasurementResultsToFile() {
@@ -47,11 +49,13 @@ public class EvaluationServiceNameResolverPerSec
 		//		System.out.println();
 
 		Statistics stats = new Statistics(times);
+		
+		String output = loadCurr + " | " + entries + " | " + errors + " | " + String.format("%.3f", stats.getMean()/1000000) + " | " + String.format("%.3f", stats.getMedian()/1000000) + " | " + String.format("%.3f", stats.getStdDev()/1000000) + " | " + times.size();
 
-		System.out.println(loadCurr + " | " + entries + " | " + errors + " | " + String.format("%.3f", stats.getMean()) + " | " + String.format("%.3f", stats.getMedian()) + " | " + String.format("%.3f", stats.getStdDev()) + " | " + times.size());
+		System.out.println(output);
 
 		try {		
-			bWriter.write(loadCurr + " | " + entries + " | " + errors + " | " + String.format("%.3f", stats.getMean()) + " | " + String.format("%.3f", stats.getMedian()) + " | " + String.format("%.3f", stats.getStdDev()) + " | " + times.size());		
+			bWriter.write(output);
 			bWriter.newLine();
 			bWriter.flush();
 
@@ -72,8 +76,8 @@ public class EvaluationServiceNameResolverPerSec
 		String	serviceName	= null;
 		int		serviceKey	= ServiceNameEntry.NO_KEY;
 
-		int loadStart = 1; // number of loadCurr client requests per seconds
-		int loadStep = 1;
+		int loadStart = 100; // number of loadCurr client requests per seconds
+		int loadStep = 100;
 		int loadEnd = 1000000;
 
 		logFile	= new File(args[0]);
@@ -115,7 +119,9 @@ public class EvaluationServiceNameResolverPerSec
 		for(loadCurr = loadStart; loadCurr <= loadEnd; loadCurr = loadCurr + loadStep)
 		{
 			Vector<EvaluationTask> evaluationTaskVector = new Vector<EvaluationTask>();
-			final Vector<Future<?>> scheduledTaskVector = new Vector<Future<?>>();
+			final Vector<Future<?>> scheduledTaskVector = new Vector<Future<?>>();			
+			times = new Vector<Long>();
+			numberOfLookup = 0;
 
 
 			// start LOCIC
@@ -147,10 +153,12 @@ public class EvaluationServiceNameResolverPerSec
 			//			EvaluationTask evaluationTask3 = new EvaluationTask();
 			//			EvaluationTask evaluationTask4 = new EvaluationTask();
 
-			//periodicDelay = (long) 4*(1000000000/loadCurr)/2; // multiplied by 4 for four threads; divided by 2 to model poisson arrival of client requests
+			//periodicDelay = (long) 4*(1000000000/loadCurr); // multiplied by 4 for four threads
 			//			periodicDelay = (long) 4*(1000000000/loadCurr);
 			//			periodicDelay = (long) (1000000000/loadCurr);
+
 			periodicDelay = 1000000000;
+
 			//			long initialDelay = periodicDelay/4;
 
 
@@ -193,8 +201,8 @@ public class EvaluationServiceNameResolverPerSec
 				}			
 			}
 
-			scheduler.shutdownNow();			
-	
+			scheduler.shutdownNow();	
+			
 			while (!scheduler.isTerminated()) {
 				try {
 					Thread.sleep(experminentationTimeSeconds*1000);
