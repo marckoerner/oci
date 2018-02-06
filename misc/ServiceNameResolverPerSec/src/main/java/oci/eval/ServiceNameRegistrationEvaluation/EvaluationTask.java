@@ -4,6 +4,7 @@ import oci.lib.ServiceNameResolver;
 
 public class EvaluationTask extends Thread
 {
+	
 	public void run() {		
 		if(EvaluationServiceNameResolverPerSec.errors > 5) 
 		{
@@ -16,20 +17,29 @@ public class EvaluationTask extends Thread
     	String serviceName = "service" + d.intValue();
     	
     	// generate random start time to model poission arrival of client request
-//    	Double randomStartTime_ms = Math.random() * (EvaluationServiceNameResolverPerSec.periodicDelay/1000000);
-//
-//		try {
-//			Thread.sleep(randomStartTime_ms.intValue());
-//		} catch (InterruptedException e) {
-//			// nothing
-//		}
+    	if (EvaluationServiceNameResolverPerSec.poisson)
+    	{
+        	Double randomStartTime_ms = Math.random() * (EvaluationServiceNameResolverPerSec.periodicDelay/1000000);
+
+    		try {
+    			Thread.sleep(randomStartTime_ms.intValue());
+    		} catch (InterruptedException e) {
+    			// nothing
+    		}
+    	}
 		
 		try {
-			long startTime	= System.currentTimeMillis();
+			long startTime	= System.nanoTime();
 			ServiceNameResolver.getEdgeServiceIpAddress(serviceName);
-			long stopTime	= System.currentTimeMillis();
-			EvaluationServiceNameResolverPerSec.times.add(stopTime - startTime);
+			long stopTime	= System.nanoTime();
 			
+			// elimination of transient phase by ignoring the first lookups in the stats
+			if (EvaluationServiceNameResolverPerSec.numberOfLookup > (2*EvaluationServiceNameResolverPerSec.entries)) {
+				EvaluationServiceNameResolverPerSec.times.add(stopTime - startTime);
+			}
+			else {
+				EvaluationServiceNameResolverPerSec.numberOfLookup++;
+			}				
 		} 
 		catch(Exception error) {
 			error.printStackTrace();
