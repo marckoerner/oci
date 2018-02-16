@@ -14,7 +14,8 @@ import java.net.Socket;
  */
 public class ServiceNameResolver {
 	
-	public final static byte[]			IPADDRESS		= GlobalConstants.LOCIC_IP_BYTE; 		// LOCIC IP (first iteration)
+	// public final static byte[]			IPADDRESS		= GlobalConstants.LOCIC_IP_BYTE; 		// LOCIC IP (first iteration)
+	public final static String			IPADDRESS		= GlobalConstants.LOCIC_IP_STRING;
 	public final static int				PORT			= GlobalConstants.PORT_NAME_SERVICE;	// OCI name service port (DNS 53)
 	
     private final static int			SOCKET_TIMEOUT	= GlobalConstants.SOCKET_TIMEOUT;		// 5 seconds timeout
@@ -33,7 +34,8 @@ public class ServiceNameResolver {
 		
 		// TODO get Edge Service IP address via OCI name resolution protocol (UDP)
 		try {			
-			Socket locicSocket = new Socket(InetAddress.getByAddress(IPADDRESS), PORT);
+			// Socket locicSocket = new Socket(InetAddress.getByAddress(IPADDRESS), PORT);
+			Socket locicSocket = new Socket(InetAddress.getByName(IPADDRESS), PORT);
 			locicSocket.setSoTimeout(SOCKET_TIMEOUT);
 			locicSocket.setTcpNoDelay(true);
 			

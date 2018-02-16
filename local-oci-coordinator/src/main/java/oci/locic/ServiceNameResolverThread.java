@@ -3,12 +3,8 @@
  */
 package oci.locic;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-
-import oci.lib.ServiceNameEntry;
 
 /**
  * The ServiceNameResolverThread class implements and worker thread for dealing with client name resolution requests
