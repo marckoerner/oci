@@ -16,7 +16,8 @@ import java.net.UnknownHostException;
  */
 public class ServiceNameRegistration {
 	
-	public final static byte[]			IPADDRESS		= GlobalConstants.LOCIC_IP_BYTE;					// LOCIC IP (first iteration)
+	// public final static byte[]			IPADDRESS		= GlobalConstants.LOCIC_IP_BYTE;					// LOCIC IP (first iteration)
+	public final static String			IPADDRESS		= GlobalConstants.LOCIC_IP_STRING;
 	public final static int				PORT			= GlobalConstants.PORT_NAME_REGISTRATION;			// Port 5534
 	
     private final static int			SOCKET_TIMEOUT	= GlobalConstants.SOCKET_TIMEOUT; // 5 seconds timeout
@@ -48,7 +49,7 @@ public class ServiceNameRegistration {
 				|| serviceNameEntry.getIpAddress() == null) return ret;
 		
 		try {
-			Socket locicSocket = new Socket(InetAddress.getByAddress(IPADDRESS), PORT);
+			Socket locicSocket = new Socket(InetAddress.getByName(IPADDRESS), PORT);
 			locicSocket.setSoTimeout(SOCKET_TIMEOUT);
 			locicSocket.setTcpNoDelay(true);
 			
@@ -85,7 +86,7 @@ public class ServiceNameRegistration {
 		ServiceNameEntry serviceNameEntry = null;
 		try {
 			// workaround for safety on null pointer in registerEdgeService() method
-			serviceNameEntry = new ServiceNameEntry(serviceName, InetAddress.getByAddress(IPADDRESS));
+			serviceNameEntry = new ServiceNameEntry(serviceName, InetAddress.getByName(IPADDRESS));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 			return false;

@@ -52,7 +52,7 @@ public class LocalOciCoordinator {
 		// add mock echo edge service to service list
 		ServiceNameEntry echoService = null;
 		try {
-			echoService = new ServiceNameEntry("mockService", InetAddress.getByAddress(ServiceNameResolver.IPADDRESS));
+			echoService = new ServiceNameEntry("mockService", InetAddress.getByName(ServiceNameResolver.IPADDRESS));
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
