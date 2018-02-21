@@ -15,10 +15,10 @@ import oci.lib.ServiceNameRegistration;
  */
 public class LocicCommunicationThread extends Thread {
 	
-	private Socket						locic			= null;
-	private GenericResourceManagement	resourceManager = null;
+	private Socket								locic			= null;
+	private GenericResourceManagementInterface	resourceManager = null;
 	
-	LocicCommunicationThread(Socket locic, GenericResourceManagement resourceManager) {
+	LocicCommunicationThread(Socket locic, GenericResourceManagementInterface resourceManager) {
 		this.locic				= locic;
 		this.resourceManager	= resourceManager;
 	}

@@ -61,7 +61,7 @@ public class ResourceAndOrchestrationManager {
 		 * implementation like E2, Mininet, OpenStack, ...
 		 **/
 		// GenericResourceManagement resourceManagement = new MockResourceManagement("mockResourceManager");
-		GenericResourceManagement resourceManagement = new MininetResourceManagement();
+		GenericResourceManagementInterface resourceManagement = new MininetResourceManagement();
 		
 		try {
 			// connect to local OCI coordinator

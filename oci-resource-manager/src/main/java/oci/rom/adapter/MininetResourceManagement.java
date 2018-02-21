@@ -4,19 +4,20 @@
 package oci.rom.adapter;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
-import oci.rom.GenericResourceManagement;
+import oci.rom.GenericResourceManagementInterface;
 import oci.rom.ResourceAndOrchestrationManager;
 
 /**
  * This is an implementation of the GenericResourceManagement for the Mininet OCI-RnOM
  * @author Marc Koerner
  */
-public class MininetResourceManagement implements GenericResourceManagement {
+public class MininetResourceManagement implements GenericResourceManagementInterface {
 	
 	//public	final static String			HOSTNAME		= "c10.millennium.berkeley.edu";
 	public	final static String			HOSTNAME		= "localhost";
@@ -104,6 +105,24 @@ public class MininetResourceManagement implements GenericResourceManagement {
 
 	public boolean isEdgeServiceRunning() {
 		//TODO implement is running check / locally?
+		return false;
+	}
+
+	@Override
+	public boolean resourcesAvailable(int cpu, int memory, int disk) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean resourcesAvailable(int cpu_cores, int frequency) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean startEdgeService(File edgeServiceApplicationPackage) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 	
