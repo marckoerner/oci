@@ -1,15 +1,16 @@
 package oci.rom.adapter;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import oci.rom.GenericResourceManagement;
+import oci.rom.GenericResourceManagementInterface;
 
 /**
  * Mock resource management implementation based on the regarding generic interface
  * @author Marc Koerner
  */
-public class MockResourceManagement implements GenericResourceManagement {
+public class MockResourceManagement implements GenericResourceManagementInterface {
 	
 	private String resourceManagementName	= null;
 	//private String edgeServiceFileName		= null;
@@ -56,6 +57,24 @@ public class MockResourceManagement implements GenericResourceManagement {
 
 	public boolean isEdgeServiceRunning() {
 		System.out.println("Edge service not running");
+		return false;
+	}
+
+	@Override
+	public boolean resourcesAvailable(int cpu, int memory, int disk) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean resourcesAvailable(int cpu_cores, int frequency) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean startEdgeService(File edgeServiceApplicationPackage) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 
