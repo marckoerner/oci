@@ -9,6 +9,7 @@ import java.util.Vector;
 
 import oci.lib.ServiceNameEntry;
 import oci.lib.ServiceNameRegistration;
+import oci.lib.ServiceNameResolver;
 
 import java.util.concurrent.*;
 
@@ -19,14 +20,21 @@ import java.util.concurrent.*;
 
 public class EvaluationServiceNameResolverPerSec
 {
+	// config parameters	
+	public static int entries = 100;	
+	public static int loadStart = 1; // number of loadCurr client requests per seconds
+	public static int loadStep = 1;
+	public static int loadEnd = 1000000;
+	public static boolean poisson = true;
+	public static int experminentationTimeSeconds = 30; // sec	
+	//---
 
-	public static Vector<Long> times = null;
 	public static int loadCurr = 0;
-	public static int errors = 0;
-	public static int entries = 100;
+	public static long periodicDelay = 1000; // msec
 	public static Integer numberOfLookup = 0;
-	public static int experminentationTimeSeconds = 30;
-	public static long periodicDelay;
+	public static int errors = 0;
+	public static Vector<Long> times = null;
+	public static int nullIpCounter = 0;
 
 	static File logFile	= null;
 	static FileWriter fWriter = null;
@@ -34,14 +42,12 @@ public class EvaluationServiceNameResolverPerSec
 	// value separator
 	static String seperator	= " | ";
 
-	static ScheduledExecutorService scheduler;
-	public static boolean poisson = true;
+	static ScheduledExecutorService scheduler;	
 
 	// writes probes to file
 	public static void writeMeasurementResultsToFile() {
 
 		//		int transientOffset = 2*entries;
-
 		//				System.out.print("loadCurr " + loadCurr + ": ");
 		//		for(int i=0; i<=times.size()-1; i++) {
 		//			System.out.print(times.get(i)/1000000 + "|");
@@ -49,8 +55,8 @@ public class EvaluationServiceNameResolverPerSec
 		//		System.out.println();
 
 		Statistics stats = new Statistics(times);
-		
-		String output = loadCurr + " | " + entries + " | " + errors + " | " + String.format("%.3f", stats.getMean()/1000000) + " | " + String.format("%.3f", stats.getMedian()/1000000) + " | " + String.format("%.3f", stats.getStdDev()/1000000) + " | " + times.size();
+
+		String output = loadCurr + " | " + entries + " | " + experminentationTimeSeconds + " | " + String.format("%.3f", stats.getMean()/1000000) + " | " + String.format("%.3f", stats.getMedian()/1000000) + " | " + String.format("%.3f", stats.getPercentile(0.75)/1000000) + " | "+ String.format("%.3f", stats.getPercentile(0.90)/1000000) + " | " + String.format("%.3f", stats.getPercentile(0.95)/1000000) + " | " + String.format("%.3f", stats.getPercentile(0.99)/1000000) + " | "+ String.format("%.3f", stats.getStdDev()/1000000) + " | " + times.size() + " | " + nullIpCounter;
 
 		System.out.println(output);
 
@@ -62,27 +68,21 @@ public class EvaluationServiceNameResolverPerSec
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
-		}			
-
-	} 
+		}
+	}
 
 	public static void main( String[] args ) throws Exception
-	{
+	{			
 		System.out.println( "LOCIC based Name Service Lookup Benchmark" );
-		System.out.println( "load | entries | err | mean | median | stdev | number" );
-
 
 		String	locic_ip		= "localhost";
 		String	serviceName	= null;
 		int		serviceKey	= ServiceNameEntry.NO_KEY;
 
-		int loadStart = 100; // number of loadCurr client requests per seconds
-		int loadStep = 100;
-		int loadEnd = 1000000;
-
-		logFile	= new File(args[0]);
-
-		// 1. pre work: feed LOCIC with edge service name entries
+		logFile	= new File(args[0]);		
+		entries = Integer.parseInt(args[1]);
+		loadStart = Integer.parseInt(args[2]);
+		loadStep = Integer.parseInt(args[3]);
 
 		try
 		{
@@ -95,10 +95,9 @@ public class EvaluationServiceNameResolverPerSec
 			return;
 		}
 
-		for(int i = 0; i < entries; i++) {
+		// 1. pre work: feed LOCIC with edge service name entries
 
-			//TODO: what is that?
-			if(errors > 5) return;
+		for(int i = 0; i < entries; i++) {
 
 			serviceName = "service" + i;
 
@@ -109,19 +108,81 @@ public class EvaluationServiceNameResolverPerSec
 					errors++;
 				}
 
-
 			} catch(Exception error) {
 				error.printStackTrace();
 				errors++;
 			}
 		}
 
+		// 2. read each LOCIC edge service for elimination of transient phase by ignoring the first lookups in the stats
+
+		for (int j =0 ; j < 4 ; j++) {
+			for(int i = 0; i < entries; i++) {
+
+				serviceName = "service" + i;
+
+				InetAddress ipAddress = ServiceNameResolver.getEdgeServiceIpAddress(serviceName);
+
+				if (ipAddress == null)
+				{
+					errors++;	
+				}
+			}	
+		}
+		
+		String tableHeader = "load | entries | expT | mean | median | 75p | 90p | 95p | 99p | stdev | number | errors";
+		
+		System.out.println("Number of Initial Lookup Errors:" + errors );
+
+		try {		
+			bWriter.write("Number of Initial Lookup Errors:" + errors);
+			bWriter.newLine();
+			bWriter.write(tableHeader);
+			bWriter.newLine();
+			bWriter.flush();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}		
+
+		System.out.println(tableHeader);
+
 		for(loadCurr = loadStart; loadCurr <= loadEnd; loadCurr = loadCurr + loadStep)
 		{
 			Vector<EvaluationTask> evaluationTaskVector = new Vector<EvaluationTask>();
-			final Vector<Future<?>> scheduledTaskVector = new Vector<Future<?>>();			
+			final Vector<Future<?>> scheduledTaskVector = new Vector<Future<?>>();
 			times = new Vector<Long>();
 			numberOfLookup = 0;
+			nullIpCounter = 0;
+
+			// read each LOCIC edge service for elimination of transient phase by ignoring the first lookups in the stats			
+			for (int j =0 ; j < 4 ; j++) {
+				for(int i = 0; i < entries; i++) {
+					serviceName = "service" + i;
+					ServiceNameResolver.getEdgeServiceIpAddress(serviceName);
+				}
+			}
+
+			// Adaptive load steps
+			if (loadCurr < 10)
+				loadStep = 1;
+			else if (loadCurr < 100)
+				loadStep = 10;
+			else if (loadCurr < 1000)
+				loadStep = 100; 
+			else
+				loadStep = 1000;
+
+//			experminentationTimeSeconds = 4*entries/loadCurr;
+
+//			if (experminentationTimeSeconds > 900)
+				experminentationTimeSeconds = 900;
+
+//			if (experminentationTimeSeconds < 30)
+//				experminentationTimeSeconds = 30;
+
+			//			experminentationTimeSeconds = 10;
 
 
 			// start LOCIC
@@ -157,15 +218,16 @@ public class EvaluationServiceNameResolverPerSec
 			//			periodicDelay = (long) 4*(1000000000/loadCurr);
 			//			periodicDelay = (long) (1000000000/loadCurr);
 
-			periodicDelay = 1000000000;
+			long initialDelay = 0;
 
-			//			long initialDelay = periodicDelay/4;
+			Double initialDelayStepDouble = (double) periodicDelay/loadCurr;
+			long initialDelayStep = (long) initialDelayStepDouble.intValue();
 
-
-			for (int i=0;i<loadCurr;i++) {
+			for (int i=0;i<loadCurr;i++) {	
 				EvaluationTask evaluationTask1 = evaluationTaskVector.get(i);
-				final Future<?> f1 = scheduler.scheduleAtFixedRate(evaluationTask1, 0, periodicDelay, TimeUnit.NANOSECONDS);
-				scheduledTaskVector.add(f1);				
+				final Future<?> f1 = scheduler.scheduleAtFixedRate(evaluationTask1, initialDelay, periodicDelay, TimeUnit.MILLISECONDS);
+				scheduledTaskVector.add(f1);
+				initialDelay = initialDelay + initialDelayStep;
 			}			
 
 			//			final Future<?> f2 = scheduler.scheduleAtFixedRate(evaluationTask2, initialDelay, periodicDelay, TimeUnit.NANOSECONDS);
@@ -173,7 +235,7 @@ public class EvaluationServiceNameResolverPerSec
 			//			final Future<?> f4 = scheduler.scheduleAtFixedRate(evaluationTask4, initialDelay*3, periodicDelay, TimeUnit.NANOSECONDS);
 
 			Runnable cancelTask = new Runnable() {
-				
+
 				public void run() {
 
 					for (int i=0;i<loadCurr;i++) {
@@ -195,24 +257,24 @@ public class EvaluationServiceNameResolverPerSec
 
 			while (!cancelHandle.isDone() ) {
 				try {
-					Thread.sleep(experminentationTimeSeconds*1000);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}			
 			}
 
-			scheduler.shutdownNow();	
-			
+			scheduler.shutdownNow();
+
 			while (!scheduler.isTerminated()) {
 				try {
-					Thread.sleep(experminentationTimeSeconds*1000);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}								
-			}		
-			
+			}
+
 			EvaluationServiceNameResolverPerSec.writeMeasurementResultsToFile();
-			
+
 
 			// kill LOCIC
 

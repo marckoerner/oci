@@ -39,5 +39,28 @@ public class Statistics {
        } 
        return data.get(data.size() / 2);
     }
+    
+    public double getPercentile(double percentile) {
+    	
+    	if (percentile <=0 || percentile >=1) {
+    		return -1;
+    	}
+    	
+    	Collections.sort(data);
+    	
+    	Double p = data.size()*percentile;    	
+    	int k = p.intValue();
+    	
+    	if ((k+1) >= data.size())
+    	{
+    		return data.get(data.size()-1);
+    	}
+    	else
+    	{
+    		return 0.5*(data.get(k)+data.get(k+1));
+    	}
+    	
+    	    	
+    }
 }
 
