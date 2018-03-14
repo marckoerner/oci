@@ -34,10 +34,10 @@ public class EvaluationTaskDnsLookupBind9 extends Thread
 		}
 
 		try {
-			startTime	= System.currentTimeMillis();
+			startTime	= System.nanoTime();
 			InetAddress.getByName(serviceName);
-			stopTime	= System.currentTimeMillis();
-			//	    		System.out.print(address.toString() + "|");
+			stopTime	= System.nanoTime();
+//			System.out.print(address.toString() + "|");
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -47,6 +47,7 @@ public class EvaluationTaskDnsLookupBind9 extends Thread
 		if (EvaluationDnsLookupBind9PerSec.numberOfLookup > (2*EvaluationDnsLookupBind9PerSec.entries))
 		{
 			EvaluationDnsLookupBind9PerSec.times.add((stopTime-startTime));
+//			System.out.print(stopTime-startTime + "|");
 		}
 		else
 		{

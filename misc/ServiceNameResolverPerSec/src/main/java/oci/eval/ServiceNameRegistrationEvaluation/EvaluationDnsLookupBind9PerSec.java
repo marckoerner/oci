@@ -50,7 +50,7 @@ public class EvaluationDnsLookupBind9PerSec
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
-		}		
+		}
 	} 
 
 	public static void main( String[] args ) throws Exception
@@ -62,11 +62,19 @@ public class EvaluationDnsLookupBind9PerSec
 		System.out.println( "LOCIC based Name Service Lookup Benchmark" );
 		System.out.println( "load | entries | err | mean | median | stdev | number" );
 
-		int loadStart = 100; // number of loadCurr client requests per seconds
-		int loadStep = 100;
+		int loadStart = 500; // number of loadCurr client requests per seconds
+		int loadStep = 500;
 		int loadEnd = 1000000;
 
 		logFile	= new File(args[0]);
+		
+		// 0. precheck
+		
+		if (experminentationTimeSeconds*loadStart <= 2*entries)
+		{
+			System.out.println("Error to less measurement points!");
+			System.exit(0);
+		}
 
 		try
 		{
