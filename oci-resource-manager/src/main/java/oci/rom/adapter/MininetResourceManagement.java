@@ -125,5 +125,11 @@ public class MininetResourceManagement implements GenericResourceManagementInter
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public boolean resourcesAvailable(File edgeServiceApplicationPackage) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }

@@ -37,6 +37,13 @@ public interface GenericResourceManagementInterface {
 	public boolean resourcesAvailable(int cpu_cores, int frequency);
 	
 	/**
+	 * Validates if sufficient compute resources are available in order to start a new instance of a given edge service
+	 * @param edgeServiceApplicationPackage EdgeServiceApplicationPackage (*.esap) file
+	 * @return true if resources are available
+	 */
+	public boolean resourcesAvailable(File edgeServiceApplicationPackage);
+	
+	/**
 	 * Starts and bootstraps the give edge service
 	 * @param edgeServiceName name of the edgeServiceApplicationPackage
 	 * @return true if startup was successful
