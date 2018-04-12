@@ -78,4 +78,10 @@ public class MockResourceManagement implements GenericResourceManagementInterfac
 		return false;
 	}
 
+	@Override
+	public boolean resourcesAvailable(File edgeServiceApplicationPackage) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
