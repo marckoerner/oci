@@ -36,3 +36,23 @@ The echo client is a dummy implementation of a client service using the OCIlib. 
 The echo edge service is the counterpart of the echo client. It uses also the OCIlib and serves as edge mock service.
 Mininet Resource and Orchestration Management Adapter
 This tool is an adapter for the mininet network emulator and serves as actual resource and orchestration manager test environment.
+
+
+# Build and Execution Instructions
+This section gives brief instructions how to build and executions the OCI.
+
+### Required packages
+-	Java
+-	Maven
+
+### Build components
+```
+cd <component>
+mvn install
+```
+
+### Run applications
+```
+cd <component>/target/
+java -jar <component>-jar-with-dependencies.jar
+```
