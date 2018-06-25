@@ -23,7 +23,7 @@ The LOCIC is the actual OCI edge management entity. It communicates with the GOC
 ### OCI Resource and Orchestration Manager
 The RnOM is an abstraction layer for the underlying actual resource and orchestration framework. It provides a generic interface to adapt an arbitrary resource management API. This API provides methods to request resources and start or stop edge services, or just obtain their status and network address. Future versions will also deal with orchestration information for component based edge services and their scalability.
 
-### OCI data plane (under discussion / devlopment)
+### OCI data plane (under discussion / development)
 The OCI classifier (aka data plane) is a software component, which operates on ISO/OSI layer two (L2) and is located in packet forwarding path on the edge. Similar to a SDN data-plane, the OCI classifier processes packet header lookups for not established flows in order to identify OCI name service requests. Cached name entries where directly answered, while for un-cached entries an inquiry is send to the LOCIC. All other flows can be bypassed by instructions from the LOCIC to the resource management system, e.g. SDN controller, in order to reduce the lookup overhead. This component can be replicated for scalability. It further increases the systems security, since the LOCIC address is not exposed at all and attackers cannot flood the edge with DDoS attacks.
 
 ### OCI lib
