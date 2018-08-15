@@ -23,8 +23,8 @@ The LOCIC is the actual OCI edge management entity. It communicates with the GOC
 ### OCI Resource and Orchestration Manager
 The RnOM is an abstraction layer for the underlying actual resource and orchestration framework. It provides a generic interface to adapt an arbitrary resource management API. This API provides methods to request resources and start or stop edge services, or just obtain their status and network address. Future versions will also deal with orchestration information for component based edge services and their scalability.
 
-### OCI data plane
-The OCI classifier is a software component which operates within ISO/OSI layer two (L2) and sits directly in packet forwarding path at the edge. Similar to a SDN data-plane, the OCI classifier processes packet header lookups for not established flows in order to identify OCI name service requests. Cached name entries where directly answered, while for un-cached entries an inquiry is send to the LOCIC. All other flows can be bypassed by instructions from the LOCIC to the resource management system, e.g. SDN controller, in order to reduce the lookup overhead. This component can be replicated for scalability. It further increases the systems security, since the LOCIC address is not exposed at all and attackers cannot flood the edge with DDoS attacks.
+### OCI data plane (under discussion / development)
+The OCI classifier (aka data plane) is a software component, which operates on ISO/OSI layer two (L2) and is located in packet forwarding path on the edge. Similar to a SDN data-plane, the OCI classifier processes packet header lookups for not established flows in order to identify OCI name service requests. Cached name entries where directly answered, while for un-cached entries an inquiry is send to the LOCIC. All other flows can be bypassed by instructions from the LOCIC to the resource management system, e.g. SDN controller, in order to reduce the lookup overhead. This component can be replicated for scalability. It further increases the systems security, since the LOCIC address is not exposed at all and attackers cannot flood the edge with DDoS attacks.
 
 ### OCI lib
 The OCIlib contains methods and templates for application service developers to build client- edge-server (C-E-S) applications. Therefore, it provides edge service templates and methods which can be used by the client application to obtain the edge service address via service name lookup. Future versions of this library will also provide additional methods to make the developers life easier and support them with mechanisms to improve their C-E-S applications with resilience, availability and consistency features. 
@@ -36,3 +36,23 @@ The echo client is a dummy implementation of a client service using the OCIlib. 
 The echo edge service is the counterpart of the echo client. It uses also the OCIlib and serves as edge mock service.
 Mininet Resource and Orchestration Management Adapter
 This tool is an adapter for the mininet network emulator and serves as actual resource and orchestration manager test environment.
+
+
+# Build and Execution Instructions
+This section gives brief instructions how to build and executions the OCI.
+
+### Required packages
+-	Java
+-	Maven
+
+### Build components
+```
+cd <component>
+mvn install
+```
+
+### Run applications
+```
+cd <component>/target/
+java -jar <component>-jar-with-dependencies.jar
+```
