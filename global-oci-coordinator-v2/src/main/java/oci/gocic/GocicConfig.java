@@ -10,7 +10,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 /**
- * Object class of the GOCIC configuration file containing the parsed configuration information.
+ * Object class of the GOCIC configuration file which contains the parsed configuration information.
  * @author Marc Koerner
  */
 public class GocicConfig {
@@ -44,6 +44,10 @@ public class GocicConfig {
     public boolean parseConfig(File configFile) {
         this.configFile = configFile;
         return this.parseConfig();
+    }
+    
+    public Vector<Locic> getLocics() {
+        return locics;
     }
     
 } // class
