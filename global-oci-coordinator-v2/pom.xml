@@ -3,4 +3,26 @@
   <groupId>oci.gocic</groupId>
   <artifactId>global-oci-coordinator-v2</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  
+  <properties>
+    <maven.compiler.source>1.6</maven.compiler.source>
+    <maven.compiler.target>1.6</maven.compiler.target>
+  </properties>
+  <dependencies>
+  	<dependency>
+		<groupId>com.googlecode.json-simple</groupId>
+		<artifactId>json-simple</artifactId>
+		<version>1.1.1</version>
+   	</dependency>
+   	<!-- https://mvnrepository.com/artifact/commons-net/commons-net -->
+	<dependency>
+    	<groupId>commons-net</groupId>
+    	<artifactId>commons-net</artifactId>
+    	<version>3.3</version>
+	</dependency>
+   	
+  </dependencies>
+  
+  
+  
 </project>
