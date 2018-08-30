@@ -35,12 +35,12 @@ public class LocicResolverThread extends Thread {
             // extract client ip and port
             ip          = packet.getAddress();
             client_port = packet.getPort();
-            data        = new byte[packet.getLength()];
+            data        = new byte[packet.getLength()]; // check if this is necessary 
             
             // check client sub-network
-            boolean     ret     = false;
-            Locic       locic   = null;
-            Iterator    itr     = this.config.getLocics().iterator();
+            boolean             ret     = false;
+            Locic               locic   = null;
+            Iterator<Locic>     itr     = this.config.getLocics().iterator();
             while(itr.hasNext()) {
                 
                 locic = (Locic) itr.next();
