@@ -45,5 +45,13 @@ public class Locic {
         SubnetInfo  subnet      = this.subnet.getInfo();    
         return subnet.isInRange(ip_string);        
     }
+    
+    public InetAddress getIpAddr() {
+        return this.ip;
+    }
+    
+    public String getIpString() {
+        return this.ip.getHostAddress();
+    }
 
 } // class
