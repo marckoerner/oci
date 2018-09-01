@@ -64,5 +64,9 @@ public class Locic {
     public String getIpString() {
         return this.ip.getHostAddress();
     }
+    
+    public String getLocation() {
+        return this.location;
+    }
 
 } // class
