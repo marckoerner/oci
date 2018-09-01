@@ -3,8 +3,7 @@ package oci.gocic;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.util.Iterator;
+
 
 public class LocicResolverThread extends Thread {
     
@@ -29,16 +28,19 @@ public class LocicResolverThread extends Thread {
             packet  = new DatagramPacket(buffer, buffer.length);
             try {
                 udpServerSocket.receive(packet);
+                // start new worker
+                worker = new LocicResolverWorker(udpServerSocket, packet, config);
+                worker.start();
             } catch (IOException e) {
                 e.printStackTrace();
             }
             
-            // start new worker
-            worker = new LocicResolverWorker(udpServerSocket, packet, config);
-            worker.start();
-            
         } // while
         
     } // run
+    
+    public void stopLocicResolverThread() {
+        this.running = false;
+    }
     
 } // class

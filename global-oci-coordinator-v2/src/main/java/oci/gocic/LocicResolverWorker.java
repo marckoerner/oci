@@ -40,7 +40,6 @@ public class LocicResolverWorker extends Thread {
         data        = new byte[packet.getLength()]; // check if this is necessary 
         
         // check client sub-network
-        boolean             ret     = false;
         Locic               locic   = null;
         Iterator<Locic>     itr     = this.config.getLocics().iterator();
         
