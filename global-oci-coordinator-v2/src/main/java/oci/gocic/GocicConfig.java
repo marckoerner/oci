@@ -4,8 +4,10 @@ package oci.gocic;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.net.InetAddress;
 import java.util.Vector;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -29,10 +31,27 @@ public class GocicConfig {
         try {
             FileReader  fileReader  = new FileReader(this.configFile);
             JSONParser  parser      = new JSONParser();
-            JSONObject  object      = (JSONObject) parser.parse(fileReader);
             
-            String      ip          = (String) object.get("ip");
+            JSONArray   array       = (JSONArray) parser.parse(fileReader);
             
+            JSONObject  object      = null;
+            String      ip          = null;
+            String      subnet      = null;
+            String      location    = null;
+            
+            for(int i = 0; i<array.size(); i++) {
+                // better use iterator?
+                
+                object      = (JSONObject) array.get(i);
+                        
+                ip          = (String) object.get("ip");        
+                subnet      = (String) object.get("subnet");      
+                location    = (String) object.get("location");
+                
+                this.locics.addElement(new Locic(InetAddress.getByName(ip), subnet, location));
+                
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -47,7 +66,7 @@ public class GocicConfig {
     }
     
     public Vector<Locic> getLocics() {
-        return locics;
+        return this.locics;
     }
     
 } // class
