@@ -3,15 +3,10 @@
  */
 package oci.test;
 
-import static org.junit.Assert.*;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import junit.framework.Assert;
