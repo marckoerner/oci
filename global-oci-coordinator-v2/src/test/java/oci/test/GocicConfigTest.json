@@ -1,0 +1,20 @@
+{
+	"locic": {
+		"locic1": {"ip": "192.168.0.1", "subnet": "255.255.255.0", "location": "us.ca.berkeley"},
+		"locic2": {"ip": "192.168.0.1", "subnet": "255.255.255.0", "location": "us.ca.oakland"}
+	},
+	"gocic": [
+		{
+			"type": "gocic",
+			"ip": "123.123.123.123",
+			"provider": "local",
+			"location": "us.ca.la"
+		},
+		{
+			"type": "gocic",
+			"ip": "123.123.123.123",
+			"provider": "local",
+			"location": "us.ca.la"
+		}
+	]
+}
