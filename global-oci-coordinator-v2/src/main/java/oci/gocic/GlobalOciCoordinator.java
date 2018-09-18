@@ -14,8 +14,11 @@ public class GlobalOciCoordinator {
         LOGGER.info("Logger Name: " + LOGGER.getName());
         LOGGER.info("Global OCI Coordinator started");
         
+        // read JSON config
         
+        // start LocicResolverThread
         
+        // distribute "new" esap services
         
     } // main
 
