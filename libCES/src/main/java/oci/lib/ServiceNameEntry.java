@@ -15,6 +15,7 @@ public class ServiceNameEntry implements Serializable {
 	
 	private String		serviceName	= null;
 	private InetAddress ip			= null;
+	private int         requests    = 0;
 	private int			key			= NO_KEY;
 		
 	/**
@@ -53,6 +54,20 @@ public class ServiceNameEntry implements Serializable {
 	 */
 	public int getKey() {
 		return this.key;
+	}
+	
+	/**
+	 * Increases the request counter by 1
+	 */
+	public void newRequest() {
+	    this.requests++;
+	}
+	
+	/**
+	 * @return returns the value of the request counter
+	 */
+	public int getRequests() {
+	    return this.requests;
 	}
 	
 	@Override
