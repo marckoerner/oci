@@ -3,7 +3,7 @@ package oci.test;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.util.Vector;
+import java.util.HashSet;
 
 import org.junit.After;
 import org.junit.Before;
@@ -30,7 +30,7 @@ public class GocicConfigTest {
     public void parseConfigTest() {
         assertTrue(this.config.parseConfig());
         
-        Vector<Locic>  locics = this.config.getLocics();
+        HashSet<Locic>  locics = this.config.getLocics();
         assertNotNull(locics);
         
         // TODO: check locic mock values
