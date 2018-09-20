@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.net.InetAddress;
-import java.util.Vector;
+import java.util.HashSet;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -17,9 +17,9 @@ import org.json.simple.parser.JSONParser;
  */
 public class GocicConfig {
 
-    private File    configFile  = null;
-    private Vector  locics      = new Vector<Locic>();
-    private Vector  gocics      = new Vector<Locic>();
+    private File            configFile  = null;
+    private HashSet<Locic>  locics      = null;
+    private HashSet<Locic>  gocics      = null;
     
     public GocicConfig(File configFile) {
         this.configFile = configFile;
@@ -39,6 +39,8 @@ public class GocicConfig {
             String      subnet      = null;
             String      location    = null;
             
+            this.locics = new HashSet<Locic>(array.size()+10);
+            
             for(int i = 0; i<array.size(); i++) {
                 // better use iterator?
                 
@@ -48,7 +50,7 @@ public class GocicConfig {
                 subnet      = (String) object.get("subnet");      
                 location    = (String) object.get("location");
                 
-                this.locics.addElement(new Locic(InetAddress.getByName(ip), subnet, location));
+                this.locics.add(new Locic(InetAddress.getByName(ip), subnet, location));
                 
             }
 
@@ -65,7 +67,7 @@ public class GocicConfig {
         return this.parseConfig();
     }
     
-    public Vector<Locic> getLocics() {
+    public HashSet<Locic> getLocics() {
         return this.locics;
     }
     
