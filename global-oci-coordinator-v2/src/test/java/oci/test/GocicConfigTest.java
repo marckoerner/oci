@@ -15,8 +15,7 @@ import oci.gocic.Locic;
 public class GocicConfigTest {
     
     private GocicConfig     config = null;
-
-
+    
     @Before
     public void setUp() throws Exception {
         this.config = new GocicConfig(new File("./GocicConfig.json"));
